@@ -4,7 +4,7 @@ Static webshop experiment template for running frontend-only design experiments 
 
 ## Run
 
-Open `/home/runner/work/Thesis_Experiment/Thesis_Experiment/index.html` in a browser.
+Open `index.html` in a browser (from your local clone).
 
 ## Experimental conditions
 
