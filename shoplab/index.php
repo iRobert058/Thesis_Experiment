@@ -39,21 +39,135 @@ $PRODUCTS = [
 // SURVEY QUESTIONS (step 6)
 // ═══════════════════════════════════════════════════════════════════
 $SURVEY_QUESTIONS = [
-    // Q9 — instruction-masked attention check (unchanged)
-    ['id'=>'Q9', 'text'=>'For quality control purposes, please select "Never" for this item. How often do you return purchased items to an online store?',
-     'options'=>['1'=>'Never','2'=>'Rarely','3'=>'Sometimes','4'=>'Often','5'=>'Always'],
+    ['id'=>'Q9',
+     'text'   =>['en'=>'For quality control purposes, please select "Never" for this item. How often do you return purchased items to an online store?',
+                 'nl'=>'Selecteer voor kwaliteitscontrole "Nooit" voor deze vraag; hoe vaak retourneert u gekochte artikelen naar een online winkel?'],
+     'options'=>['en'=>['1'=>'Never','2'=>'Rarely','3'=>'Sometimes','4'=>'Often','5'=>'Always'],
+                 'nl'=>['1'=>'Nooit','2'=>'Zelden','3'=>'Soms','4'=>'Vaak','5'=>'Altijd']],
      'is_val'=>true,'correct'=>'1','flag'=>null],
 
-    // D1 — comprehension check for distraction step 2 (cheapest product)
-    ['id'=>'D1', 'text'=>'Which of the following products was the cheapest in the online store you just browsed?',
-     'options'=>['a'=>'Yoga Mat Premium','b'=>'Manual Coffee Grinder','c'=>'Bamboo Water Bottle','d'=>'Portable Phone Stand'],
+    ['id'=>'D1',
+     'text'   =>['en'=>'Which of the following products was the cheapest in the online store you just browsed?',
+                 'nl'=>'Welk van de volgende producten was het goedkoopst in de webshoop die u zojuist heeft bekeken?'],
+     'options'=>['en'=>['a'=>'Yoga Mat Premium','b'=>'Manual Coffee Grinder','c'=>'Water Bottle','d'=>'Portable Phone Stand'],
+                 'nl'=>['a'=>'Yoga Mat Premium','b'=>'Manual Coffee Grinder','c'=>'Water Bottle','d'=>'Portable Phone Stand']],
      'is_val'=>true,'correct'=>'d','flag'=>null],
 
-    // D2 — comprehension check for distraction step 4 (most-reviewed product)
-    ['id'=>'D2', 'text'=>'Approximately how many customer reviews did the most-reviewed product in the store have?',
-     'options'=>['a'=>'Fewer than 500','b'=>'500 – 1,000','c'=>'1,000 – 2,000','d'=>'More than 2,000'],
+    ['id'=>'D2',
+     'text'   =>['en'=>'Approximately how many customer reviews did the most-reviewed product in the store have?',
+                 'nl'=>'Hoeveel klantbeoordelingen had het meest beoordeelde product in de winkel ongeveer?'],
+     'options'=>['en'=>['a'=>'Fewer than 500','b'=>'500 – 1,000','c'=>'1,000 – 2,000','d'=>'More than 2,000'],
+                 'nl'=>['a'=>'Minder dan 500','b'=>'500 – 1.000','c'=>'1.000 – 2.000','d'=>'Meer dan 2.000']],
      'is_val'=>true,'correct'=>'d','flag'=>null],
 ];
+
+// ═══════════════════════════════════════════════════════════════════
+// TRANSLATIONS
+// ═══════════════════════════════════════════════════════════════════
+$TRANSLATIONS = [
+    'en' => [
+        'home'           => 'Home',
+        'search_ph'      => 'Search products…',
+        'cart'           => 'Cart',
+        'cat_all'        => 'All',
+        'cat_electronics'=> 'Electronics',
+        'cat_home_kitchen'=> 'Home & Kitchen',
+        'cat_sports'     => 'Sports',
+        'cat_books'      => 'Books',
+        'cat_toys'       => 'Toys',
+        'all_products'   => 'All Products (%d)',
+        'reviews'        => 'reviews',
+        'back_catalog'   => '← Back to catalog',
+        'in_stock'       => '✓ In stock — ships within 1–2 business days',
+        'add_to_cart'    => 'Add to cart',
+        'buy_now'        => 'Buy now',
+        'toast_added'    => '🛒 Added to cart!',
+        'task_label'     => 'Task %d of 7',
+        'task_instr'     => 'Browse the store and please add the following product to your shopping cart: "%s"',
+        'survey_banner'  => 'Please complete the following short survey. All questions must be answered.',
+        'dist_cheap'     => 'Browse the products below. Which product is the cheapest? Click on it to continue.',
+        'dist_reviews'   => 'Browse the products below. Which product has the most reviews? Click on it to continue.',
+        'ready_h'        => 'Are you ready for the next task?',
+        'ready_p'        => 'Press the continue button when you are ready to proceed.',
+        'continue_btn'   => 'Continue →',
+        'welcome_h'      => 'Welcome to ShopLab',
+        'welcome_p'      => 'You are about to complete a short shopping task. Your unique session ID is shown below you will need to enter it in the survey at the end.',
+        'sid_label'      => 'Your session ID',
+        'start_btn'      => 'Start experiment →',
+        'sid_note'       => 'Your ID will be shown again at the end so you can copy it.',
+        'survey_h'       => 'Quick Shopping Habits Survey',
+        'survey_sub'     => 'This survey has 3 questions and should take less than 2 minutes.',
+        'submit_btn'     => 'Submit survey →',
+        'survey_alert'   => 'Please answer all questions before submitting.',
+        'done_h'         => "You're done!",
+        'done_p'         => 'Thank you for completing the shopping tasks. Please copy your session ID and enter it in the Qualtrics survey to link your responses.',
+        'copy_btn'       => '📋 Copy session ID',
+        'copied'         => '✓ Copied!',
+        'return_btn'     => 'Return to survey →',
+        'browse_title'   => 'Browse Products',
+        'footer'         => '© 2026 ShopLab Store &nbsp;·&nbsp; All prices include VAT &nbsp;·&nbsp; Free returns within 30 days',
+    ],
+    'nl' => [
+        'home'           => 'Homepagina',
+        'search_ph'      => 'Zoek producten…',
+        'cart'           => 'Winkelwagen',
+        'cat_all'        => 'Alles',
+        'cat_electronics'=> 'Elektronica',
+        'cat_home_kitchen'=> 'Huis, Tuin & Keuken',
+        'cat_sports'     => 'Sport',
+        'cat_books'      => 'Boeken',
+        'cat_toys'       => 'Speelgoed',
+        'all_products'   => 'Alle producten (%d)',
+        'reviews'        => 'beoordelingen',
+        'back_catalog'   => '←  Terug naar catalogus',
+        'in_stock'       => '✓ Op voorraad verzending binnen 1–2 werkdagen',
+        'add_to_cart'    => 'Toevoegen aan winkelwagen',
+        'buy_now'        => 'Nu kopen!',
+        'toast_added'    => '🛒 Toegevoegd aan winkelwagen!',
+        'task_label'     => 'Taak %d van 7',
+        'task_instr'     => 'Navigeer door de webshop en voeg het volgende product toe aan uw winkelwagen: "%s"',
+        'survey_banner'  => 'Vul de volgende korte enquête in. Alle vragen moeten worden beantwoord.',
+        'dist_cheap'     => 'Bekijk de volgende producten. Welk product is het goedkoopste? Klik erop om door te gaan.',
+        'dist_reviews'   => 'Bekijk de volgende producten. Welk product heeft de meeste recensies? Klik erop om door te gaan.',
+        'ready_h'        => 'Bent u klaar voor de volgende taak?',
+        'ready_p'        => 'Druk op de doorgaan als u klaar bent om verder te gaan.',
+        'continue_btn'   => 'Doorgaan →',
+        'welcome_h'      => 'Welkom bij ShopLab',
+        'welcome_p'      => 'U staat op het punt een kort webshop experiment uit te voeren. Uw unieke sessie-ID wordt hieronder weergegeven. Wilt u deze noteren in de survey? Zo kunnen we uw survey antwoorden en resultaten koppelen.',
+        'sid_label'      => 'Uw sessie-ID',
+        'start_btn'      => 'Start experiment →',
+        'sid_note'       => 'Uw ID wordt aan het einde opnieuw getoond zodat u het kunt kopiëren.',
+        'survey_h'       => 'Korte Survey',
+        'survey_sub'     => 'Deze enquête bevat 3 (korte) vragen.',
+        'submit_btn'     => 'Enquête indienen →',
+        'survey_alert'   => 'Beantwoord alle vragen voordat u de enquête indient.',
+        'done_h'         => 'Klaar!',
+        'done_p'         => 'Bedankt voor het voltooien van de winkelopdrachten. Kopieer uw sessie-ID en voer deze aub in de Qualtrics-enquête in om uw antwoorden te koppelen.',
+        'copy_btn'       => '📋 Sessie-ID kopiëren',
+        'copied'         => '✓ Gekopieerd!',
+        'return_btn'     => 'Terug naar enquête →',
+        'browse_title'   => 'Producten bekijken',
+        'footer'         => '© 2026 ShopLab Store &nbsp;·&nbsp; Alle prijzen zijn inclusief btw &nbsp;·&nbsp; Gratis retourneren binnen 30 dagen',
+    ],
+];
+
+function t(string $key): string {
+    global $TRANSLATIONS;
+    $lang = $_SESSION['lang'] ?? 'en';
+    return $TRANSLATIONS[$lang][$key] ?? $TRANSLATIONS['en'][$key] ?? $key;
+}
+
+function tCat(string $cat): string {
+    $map = [
+        'All'            => 'cat_all',
+        'Electronics'    => 'cat_electronics',
+        'Home & Kitchen' => 'cat_home_kitchen',
+        'Sports'         => 'cat_sports',
+        'Books'          => 'cat_books',
+        'Toys'           => 'cat_toys',
+    ];
+    return isset($map[$cat]) ? t($map[$cat]) : $cat;
+}
 
 // ═══════════════════════════════════════════════════════════════════
 // TASK CONFIGURATION
@@ -145,6 +259,12 @@ if ($_SESSION['step'] === 0 && empty($_SESSION['session_id'])) {
     $_SESSION['session_id'] = generateSessionId();
 }
 
+// ── Language switch (GET) ─────────────────────────────────────────
+if (isset($_GET['lang']) && in_array($_GET['lang'], ['en','nl'], true)) {
+    $_SESSION['lang'] = $_GET['lang'];
+    header('Location: index.php'); exit;
+}
+
 // ═══════════════════════════════════════════════════════════════════
 // POST HANDLER
 // ═══════════════════════════════════════════════════════════════════
@@ -207,23 +327,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // ── Survey submission ─────────────────────────────────────────
     if ($action === 'submit_survey' && !$intr && $cur === 6) {
         global $SURVEY_QUESTIONS;
+        $lang = $_SESSION['lang'] ?? 'en';
         foreach ($SURVEY_QUESTIONS as $q) {
-            $ans = $_POST['q_' . $q['id']] ?? '';
-            $vp  = '';
-            if ($q['is_val']) {
-                if ($q['correct'] !== null) {
-                    $vp = ($ans === $q['correct']) ? '1' : '0';
-                } elseif ($q['flag'] !== null) {
-                    $vp = in_array($ans, $q['flag'], true) ? '0' : '1';
-                }
+            $ans  = $_POST['q_' . $q['id']] ?? '';
+            $text = $q['text'][$lang] ?? $q['text']['en'];
+            $vp   = '';
+            if ($q['is_val'] && $q['correct'] !== null) {
+                $vp = ($ans === $q['correct']) ? '1' : '0';
             }
             appendEvent(base([
                 'event_type'             => 'survey_response',
                 'step'                   => 6,
                 'question_id'            => $q['id'],
-                'question_text'          => $q['text'],
+                'question_text'          => $text,
                 'answer_value'           => $ans,
-                'is_validation_question' => $q['is_val'] ? '1' : '0',
+                'is_validation_question' => '1',
                 'validation_passed'      => $vp,
             ]));
         }
@@ -397,6 +515,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .btn-submit{background:var(--primary);color:#fff;border:none;border-radius:var(--radius);padding:.875rem 2rem;font-size:1rem;font-weight:700;cursor:pointer;width:100%;margin-top:1.5rem;transition:background .15s}
 .btn-submit:hover{background:var(--primary-h)}
 
+/* Language switcher */
+.lang-sw{display:flex;align-items:center;gap:.3rem;font-size:.8rem;flex-shrink:0}
+.lang-sw a{color:var(--muted);text-decoration:none;font-weight:500;padding:.2rem .4rem;border-radius:4px;transition:color .15s}
+.lang-sw a.active{color:var(--primary);font-weight:700}
+.lang-sw a:hover:not(.active){color:var(--text)}
+.lang-sw span{color:var(--border)}
+
 /* Footer */
 .site-footer{background:var(--white);border-top:1px solid var(--border);margin-top:3rem;padding:1.5rem;text-align:center;font-size:.8rem;color:var(--muted)}
 
@@ -417,7 +542,8 @@ CSS;
 
 function openPage(string $title): void {
     global $CSS;
-    echo '<!DOCTYPE html><html lang="en"><head>';
+    $lang = $_SESSION['lang'] ?? 'en';
+    echo '<!DOCTYPE html><html lang="' . $lang . '"><head>';
     echo '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">';
     echo '<title>' . esc($title) . ' — ShopLab</title>';
     echo '<style>' . $CSS . '</style>';
@@ -427,21 +553,27 @@ function openPage(string $title): void {
 function siteHeader(string $context = 'catalog'): void {
     $is_product = ($context === 'product');
     $search_ro  = $is_product ? ' readonly' : '';
+    $lang       = $_SESSION['lang'] ?? 'en';
     echo '<header class="site-header"><div class="hdr-inner">';
     echo '<a class="logo" href="#" onclick="goHome();return false;">Shop<em>Lab</em></a>';
     echo '<div class="search-wrap"><span class="search-ico">🔍</span>';
-    echo '<input type="text" id="search-input" placeholder="Search products…" tabindex="-1"' . $search_ro . '></div>';
+    echo '<input type="text" id="search-input" placeholder="' . esc(t('search_ph')) . '" tabindex="-1"' . $search_ro . '></div>';
     echo '<ul class="hdr-nav">';
-    echo '<li><a href="#" onclick="goHome();return false;">Home</a></li>';
+    echo '<li><a href="#" onclick="goHome();return false;">' . esc(t('home')) . '</a></li>';
     echo '</ul>';
-    echo '<button class="cart-btn" tabindex="-1">🛒 Cart <strong id="cart-count">(0)</strong></button>';
+    echo '<div class="lang-sw">';
+    echo '<a href="index.php?lang=en"' . ($lang === 'en' ? ' class="active"' : '') . '>EN</a>';
+    echo '<span>|</span>';
+    echo '<a href="index.php?lang=nl"' . ($lang === 'nl' ? ' class="active"' : '') . '>NL</a>';
+    echo '</div>';
+    echo '<button class="cart-btn" tabindex="-1">🛒 ' . esc(t('cart')) . ' <strong id="cart-count">(0)</strong></button>';
     echo '</div></header>';
     echo '<nav class="cat-bar"><ul>';
     foreach (['All','Electronics','Home & Kitchen','Sports','Books','Toys'] as $c) {
         if ($is_product) {
-            echo '<li><a href="#" class="cat-link" onclick="goHome();return false;">' . esc($c) . '</a></li>';
+            echo '<li><a href="#" class="cat-link" onclick="goHome();return false;">' . esc(tCat($c)) . '</a></li>';
         } else {
-            echo '<li><a href="#" class="cat-link" data-filter="' . esc($c) . '">' . esc($c) . '</a></li>';
+            echo '<li><a href="#" class="cat-link" data-filter="' . esc($c) . '">' . esc(tCat($c)) . '</a></li>';
         }
     }
     echo '</ul></nav>';
@@ -453,7 +585,7 @@ function sessionBadge(string $sid): void {
 
 function taskBanner(string $msg, int $step): void {
     echo '<div class="task-banner">';
-    echo '<div class="tag">Task ' . $step . ' of 7</div>';
+    echo '<div class="tag">' . esc(sprintf(t('task_label'), $step)) . '</div>';
     echo '<div class="msg">' . esc($msg) . '</div>';
     echo '</div>';
 }
@@ -468,7 +600,7 @@ function stepDots(int $current): void {
 }
 
 function siteFooter(): void {
-    echo '<footer class="site-footer">© 2026 ShopLab Store &nbsp;·&nbsp; All prices include VAT &nbsp;·&nbsp; Free returns within 30 days</footer>';
+    echo '<footer class="site-footer">' . t('footer') . '</footer>';
 }
 
 function closePage(): void {
@@ -480,32 +612,38 @@ function closePage(): void {
 // ═══════════════════════════════════════════════════════════════════
 
 function renderStart(string $sid): void {
-    openPage('Welcome to ShopLab');
+    openPage(t('welcome_h'));
     echo '<div class="pg-center"><div class="start-card">';
-    echo '<div style="font-size:2.5rem;margin-bottom:.5rem">🛍</div>';
-    echo '<h1>Welcome to ShopLab</h1>';
-    echo '<p>You are about to complete a short shopping task. Your unique session ID is shown below — you will need to enter it in the survey at the end.</p>';
-    echo '<div class="sid-box"><div class="sid-label">Your session ID</div>';
+    $lang = $_SESSION['lang'] ?? 'en';
+    echo '<div style="font-size:2.5rem;margin-bottom:.75rem">🛍</div>';
+    echo '<div class="lang-sw" style="justify-content:center;margin-bottom:1.25rem;font-size:.9rem;gap:.6rem">';
+    echo '<a href="index.php?lang=en"' . ($lang === 'en' ? ' class="active"' : '') . '>🇬🇧 English</a>';
+    echo '<span>|</span>';
+    echo '<a href="index.php?lang=nl"' . ($lang === 'nl' ? ' class="active"' : '') . '>🇳🇱 Nederlands</a>';
+    echo '</div>';
+    echo '<h1>' . esc(t('welcome_h')) . '</h1>';
+    echo '<p>' . esc(t('welcome_p')) . '</p>';
+    echo '<div class="sid-box"><div class="sid-label">' . esc(t('sid_label')) . '</div>';
     echo '<div class="sid-value">' . esc($sid) . '</div></div>';
     echo '<form method="POST" action="index.php">';
     echo '<input type="hidden" name="action" value="start">';
-    echo '<button class="btn-primary" type="submit">Start experiment →</button>';
+    echo '<button class="btn-primary" type="submit">' . esc(t('start_btn')) . '</button>';
     echo '</form>';
-    echo '<p style="font-size:.8rem;color:var(--muted);margin-top:.5rem">Your ID will be shown again at the end so you can copy it.</p>';
+    echo '<p style="font-size:.8rem;color:var(--muted);margin-top:.5rem">' . esc(t('sid_note')) . '</p>';
     echo '</div></div>';
     closePage();
 }
 
 function renderInterstitial(int $next_step): void {
-    openPage('Ready?');
+    openPage(t('ready_h'));
     echo '<div class="pg-center"><div class="intr-card">';
     stepDots($next_step);
     echo '<div class="ico">⏸</div>';
-    echo '<h2>Are you ready for the next task?</h2>';
-    echo '<p>Press the continue button when you are ready to proceed.</p>';
+    echo '<h2>' . esc(t('ready_h')) . '</h2>';
+    echo '<p>' . esc(t('ready_p')) . '</p>';
     echo '<form method="POST" action="index.php">';
     echo '<input type="hidden" name="action" value="continue">';
-    echo '<button class="btn-primary" type="submit">Continue →</button>';
+    echo '<button class="btn-primary" type="submit">' . esc(t('continue_btn')) . '</button>';
     echo '</form>';
     echo '</div></div>';
     closePage();
@@ -516,20 +654,20 @@ function renderTaskCatalog(int $step, string $sid): void {
     global $PRODUCTS;
     $cfg      = getTaskCfg($step);
     $target   = $PRODUCTS[$cfg['product_id']];
-    $task_msg = 'Browse the store and please add the following product to your shopping cart: "' . $target['name'] . '"';
+    $task_msg = sprintf(t('task_instr'), $target['name']);
 
     // Mark task as started so task_start is only logged once per step
     $already_started = !empty($_SESSION['task_started'][$step]);
     $_SESSION['task_started'][$step] = true;
 
-    openPage('Browse Products');
+    openPage(t('browse_title'));
     siteHeader('catalog');
     sessionBadge($sid);
     taskBanner($task_msg, $step);
 
     echo '<div class="section">';
     echo '<div class="section-header">';
-    echo '<div class="section-title">All Products (' . count($PRODUCTS) . ')</div>';
+    echo '<div class="section-title">' . esc(sprintf(t('all_products'), count($PRODUCTS))) . '</div>';
     echo '</div>';
 
     echo '<div class="product-grid">';
@@ -542,12 +680,12 @@ function renderTaskCatalog(int $step, string $sid): void {
         echo '<img src="images/' . (int)$p['id'] . '.png" alt="' . esc($p['name']) . '" loading="lazy" onerror="var d=this.parentElement;d.textContent=d.dataset.icon;">';
         echo '</div>';
         echo '<div class="p-card-body">';
-        echo '<div class="p-card-cat">' . esc($p['category']) . '</div>';
+        echo '<div class="p-card-cat">' . esc(tCat($p['category'])) . '</div>';
         echo '<div class="p-card-name">' . esc($p['name']) . '</div>';
         echo '<div class="p-card-stars">' . starsHtml($p['rating']) . '</div>';
         echo '<div class="p-card-row">';
         echo '<span class="p-card-price">€' . number_format($p['price'], 2) . '</span>';
-        echo '<span class="p-card-rev">(' . number_format($p['reviews']) . ' reviews)</span>';
+        echo '<span class="p-card-rev">(' . number_format($p['reviews']) . ' ' . esc(t('reviews')) . ')</span>';
         echo '</div></div></button></form>';
     }
     echo '</div></div>';
@@ -647,35 +785,33 @@ function renderTaskProduct(int $step, int $product_id, string $sid): void {
     siteHeader('product');
     sessionBadge($sid);
 
-    $task_msg = 'Browse the store and please add the following product to your shopping cart: "' . $PRODUCTS[$cfg['product_id']]['name'] . '"';
+    $task_msg = sprintf(t('task_instr'), $PRODUCTS[$cfg['product_id']]['name']);
     taskBanner($task_msg, $step);
 
     // Back to catalog
     echo '<div class="back-wrap">';
     echo '<form id="back-form" method="POST" action="index.php" style="display:inline">';
     echo '<input type="hidden" name="action" value="back_to_catalog">';
-    echo '<button type="submit" class="back-btn">← Back to catalog</button>';
+    echo '<button type="submit" class="back-btn">' . esc(t('back_catalog')) . '</button>';
     echo '</form></div>';
 
-    $cat_esc = esc($p['category']);
-    echo '<div class="breadcrumb"><a href="#" onclick="goHome();return false;">Home</a><span>›</span><a href="#" onclick="goHomeFiltered(\'' . $cat_esc . '\');return false;">' . $cat_esc . '</a><span>›</span>' . esc($p['name']) . '</div>';
+    $cat_key = $p['category'];
+    echo '<div class="breadcrumb"><a href="#" onclick="goHome();return false;">' . esc(t('home')) . '</a><span>›</span><a href="#" onclick="goHomeFiltered(\'' . esc($cat_key) . '\');return false;">' . esc(tCat($cat_key)) . '</a><span>›</span>' . esc($p['name']) . '</div>';
 
     echo '<div class="pd-wrap"><div class="pd-grid">';
     echo '<div class="pd-img" style="background:' . esc($p['color']) . '" data-icon="' . esc($p['icon']) . '">';
     echo '<img src="images/' . (int)$p['id'] . '.png" alt="' . esc($p['name']) . '" onerror="var d=this.parentElement;d.textContent=d.dataset.icon;">';
     echo '</div>';
     echo '<div class="pd-info">';
-    echo '<div class="pd-cat">' . esc($p['category']) . '</div>';
+    echo '<div class="pd-cat">' . esc(tCat($p['category'])) . '</div>';
     echo '<h1>' . esc($p['name']) . '</h1>';
-    echo '<div class="pd-stars">' . starsHtml($p['rating']) . ' <span class="rev-count">(' . number_format($p['reviews']) . ' reviews)</span></div>';
+    echo '<div class="pd-stars">' . starsHtml($p['rating']) . ' <span class="rev-count">(' . number_format($p['reviews']) . ' ' . esc(t('reviews')) . ')</span></div>';
     echo '<div class="pd-price">€' . number_format($p['price'], 2) . '</div>';
     echo '<p class="pd-desc">' . esc($p['desc']) . '</p>';
-    echo '<div class="pd-stock">✓ In stock — ships within 1–2 business days</div>';
+    echo '<div class="pd-stock">' . esc(t('in_stock')) . '</div>';
 
-    // Button order: matches the condition for ALL products shown during this step,
-    // keeping the UI consistent (as it would be in a real store).
-    $btn_atc = '<button class="pd-btn btn-atc" data-btn="add_to_cart">Add to cart</button>';
-    $btn_bn  = '<button class="pd-btn btn-bn"  data-btn="buy_now">Buy now</button>';
+    $btn_atc = '<button class="pd-btn btn-atc" data-btn="add_to_cart">' . esc(t('add_to_cart')) . '</button>';
+    $btn_bn  = '<button class="pd-btn btn-bn"  data-btn="buy_now">' . esc(t('buy_now')) . '</button>';
     echo '<div id="btn-area">';
     if ($cond === 'standard') {
         echo $btn_atc . $btn_bn;
@@ -685,7 +821,7 @@ function renderTaskProduct(int $step, int $product_id, string $sid): void {
     echo '</div>';
     echo '</div></div></div>'; // pd-info / pd-grid / pd-wrap
 
-    echo '<div class="toast" id="toast">🛒 Added to cart!</div>';
+    echo '<div class="toast" id="toast">' . esc(t('toast_added')) . '</div>';
 
     siteFooter();
 
@@ -807,17 +943,15 @@ function renderTask(int $step, string $sid): void {
 function renderDistraction(int $step, string $sid): void {
     global $PRODUCTS;
 
-    $msg = $step === 2
-        ? 'Browse the products below. Which product is the cheapest? Click on it to continue.'
-        : 'Browse the products below. Which product has the most reviews? Click on it to continue.';
+    $msg = $step === 2 ? t('dist_cheap') : t('dist_reviews');
 
-    openPage('Browse Products');
+    openPage(t('browse_title'));
     siteHeader('catalog');
     sessionBadge($sid);
     taskBanner($msg, $step);
 
     echo '<div class="section">';
-    echo '<div class="section-header"><div class="section-title">All Products (' . count($PRODUCTS) . ')</div></div>';
+    echo '<div class="section-header"><div class="section-title">' . esc(sprintf(t('all_products'), count($PRODUCTS))) . '</div></div>';
     echo '<div class="product-grid">';
     foreach ($PRODUCTS as $p) {
         echo '<button class="p-card" data-pid="' . (int)$p['id'] . '" data-cat="' . esc($p['category']) . '" data-name="' . esc($p['name']) . '" onclick="distractionClick(this,event)">';
@@ -825,12 +959,12 @@ function renderDistraction(int $step, string $sid): void {
         echo '<img src="images/' . (int)$p['id'] . '.png" alt="' . esc($p['name']) . '" loading="lazy" onerror="var d=this.parentElement;d.textContent=d.dataset.icon;">';
         echo '</div>';
         echo '<div class="p-card-body">';
-        echo '<div class="p-card-cat">' . esc($p['category']) . '</div>';
+        echo '<div class="p-card-cat">' . esc(tCat($p['category'])) . '</div>';
         echo '<div class="p-card-name">' . esc($p['name']) . '</div>';
         echo '<div class="p-card-stars">' . starsHtml($p['rating']) . '</div>';
         echo '<div class="p-card-row">';
         echo '<span class="p-card-price">€' . number_format($p['price'], 2) . '</span>';
-        echo '<span class="p-card-rev">(' . number_format($p['reviews']) . ' reviews)</span>';
+        echo '<span class="p-card-rev">(' . number_format($p['reviews']) . ' ' . esc(t('reviews')) . ')</span>';
         echo '</div></div></button>';
     }
     echo '</div></div>';
@@ -926,22 +1060,25 @@ JS;
 // ── Survey ─────────────────────────────────────────────────────────
 function renderSurvey(string $sid): void {
     global $SURVEY_QUESTIONS;
-    openPage('Short Survey');
-    siteHeader();
+    $lang = $_SESSION['lang'] ?? 'en';
+    openPage(t('survey_h'));
+    siteHeader('catalog');
     sessionBadge($sid);
-    taskBanner('Please complete the following short survey. All questions must be answered.', 6);
+    taskBanner(t('survey_banner'), 6);
 
     echo '<div class="survey-wrap"><div class="survey-card">';
-    echo '<h2>Quick Shopping Habits Survey</h2>';
-    echo '<p class="sub">This survey has 3 questions and should take less than 2 minutes.</p>';
+    echo '<h2>' . esc(t('survey_h')) . '</h2>';
+    echo '<p class="sub">' . esc(t('survey_sub')) . '</p>';
     echo '<form method="POST" action="index.php" id="sform">';
     echo '<input type="hidden" name="action" value="submit_survey">';
 
     foreach ($SURVEY_QUESTIONS as $i => $q) {
-        $num = $i + 1;
-        echo '<div class="q-block"><div class="q-text">' . $num . '. ' . esc($q['text']) . '</div>';
+        $num  = $i + 1;
+        $text = $q['text'][$lang]    ?? $q['text']['en'];
+        $opts = $q['options'][$lang] ?? $q['options']['en'];
+        echo '<div class="q-block"><div class="q-text">' . $num . '. ' . esc($text) . '</div>';
         echo '<div class="q-opts">';
-        foreach ($q['options'] as $val => $label) {
+        foreach ($opts as $val => $label) {
             $name = 'q_' . $q['id'];
             $id   = $name . '_' . $val;
             echo '<div class="q-opt"><label for="' . esc($id) . '">';
@@ -950,11 +1087,12 @@ function renderSurvey(string $sid): void {
         }
         echo '</div></div>';
     }
-    echo '<button type="submit" class="btn-submit">Submit survey →</button>';
+    echo '<button type="submit" class="btn-submit">' . esc(t('submit_btn')) . '</button>';
     echo '</form></div></div>';
     siteFooter();
 
-    $js_sid = jsStr($sid);
+    $js_sid   = jsStr($sid);
+    $js_alert = jsStr(t('survey_alert'));
     echo <<<JS
 <script>
 (function(){
@@ -966,7 +1104,7 @@ function renderSurvey(string $sid): void {
         for (var i=0; i<blocks.length; i++){
             if (!blocks[i].querySelector('input[type=radio]:checked')){
                 e.preventDefault();
-                alert('Please answer all questions before submitting.');
+                alert('{$js_alert}');
                 return;
             }
         }
@@ -979,19 +1117,21 @@ JS;
 
 // ── End page ───────────────────────────────────────────────────────
 function renderEnd(string $sid): void {
-    openPage('Session Complete');
-    $safe_sid = esc($sid);
-    $js_sid   = jsStr($sid);
-    $q_url    = esc(QUALTRICS_URL);
+    openPage(t('done_h'));
+    $safe_sid  = esc($sid);
+    $js_sid    = jsStr($sid);
+    $q_url     = esc(QUALTRICS_URL);
+    $js_copy   = jsStr(t('copy_btn'));
+    $js_copied = jsStr(t('copied'));
 
     echo '<div class="pg-center"><div class="start-card">';
     echo '<div style="font-size:2.5rem;margin-bottom:.5rem">✅</div>';
-    echo '<h1>You\'re done!</h1>';
-    echo '<p>Thank you for completing the shopping tasks. Please copy your session ID and enter it in the Qualtrics survey to link your responses.</p>';
-    echo '<div class="sid-box"><div class="sid-label">Your session ID</div>';
+    echo '<h1>' . esc(t('done_h')) . '</h1>';
+    echo '<p>' . esc(t('done_p')) . '</p>';
+    echo '<div class="sid-box"><div class="sid-label">' . esc(t('sid_label')) . '</div>';
     echo '<div class="sid-value" id="sid-val">' . $safe_sid . '</div></div>';
-    echo '<button class="btn-primary" onclick="copyId()" id="copy-btn">📋 Copy session ID</button>';
-    echo '<a class="btn-secondary" href="' . $q_url . '">Return to survey →</a>';
+    echo '<button class="btn-primary" onclick="copyId()" id="copy-btn">' . esc(t('copy_btn')) . '</button>';
+    echo '<a class="btn-secondary" href="' . $q_url . '">' . esc(t('return_btn')) . '</a>';
     echo '</div></div>';
 
     echo <<<JS
@@ -1001,10 +1141,12 @@ function renderEnd(string $sid): void {
     fetch('log.php',{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({session_id:SID,event_type:'page_enter',step:8})});
 })();
+var COPY_LABEL   = "{$js_copy}";
+var COPIED_LABEL = "{$js_copied}";
 function copyId(){
     var sid = document.getElementById('sid-val').innerText.trim();
     var btn = document.getElementById('copy-btn');
-    function confirm(){ btn.textContent='✓ Copied!'; btn.style.background='#16a34a'; setTimeout(function(){ btn.textContent='📋 Copy session ID'; btn.style.background=''; },2500); }
+    function confirm(){ btn.textContent=COPIED_LABEL; btn.style.background='#16a34a'; setTimeout(function(){ btn.textContent=COPY_LABEL; btn.style.background=''; },2500); }
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(sid).then(confirm).catch(function(){ legacyCopy(sid); confirm(); });
     } else { legacyCopy(sid); confirm(); }
