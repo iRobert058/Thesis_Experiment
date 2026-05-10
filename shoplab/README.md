@@ -109,12 +109,13 @@ File: `data/events.csv` (never overwritten; header row written on first entry).
 | `event_type` | Triggered by | Notes |
 |---|---|---|
 | `session_start` | Clicking "Start experiment" | Step 0 |
-| `task_start` | JS on product page load | Marks t0 for timing |
-| `button_click` | Clicking either button on task page | Includes timing and unintended flag |
-| `task_complete` | Same click as `button_click` | Confirms task concluded |
-| `distraction_click` | Clicking any product in distraction step | |
-| `survey_response` | Survey form submission | One row per question |
-| `page_enter` | PHP on page render | Logged server-side |
+| `task_start` | JS on task catalog page load | Fired once per task step; marks overall task start |
+| `product_view` | JS on product detail page load | `clicked_element` = product name viewed; fired for every product opened, target or not |
+| `button_click` | Clicking either button on a product page | `is_unintended_interaction` set only for the target product; blank for non-target clicks |
+| `task_complete` | Same click as `button_click` on the **target** product | `completed = 1`; `time_to_first_click_ms` measured from target product page load |
+| `distraction_click` | Clicking any product card in a distraction step | |
+| `survey_response` | Survey form submission | One row per question (Q9, D1, D2) |
+| `page_enter` | JS/PHP on page render | Logged on catalog, product detail, survey, end pages |
 | `page_exit` | JS `beforeunload` via `sendBeacon` | |
 | `session_complete` | Reaching step 8 | `completed = 1` |
 
@@ -159,7 +160,7 @@ h1 <- task_events %>%
 
 **Measure:** `time_to_first_click_ms` in `task_complete` rows.
 
-- Time from page load (JS `performance.now()` at t0 on `task_start`) to the first click on either button, regardless of correctness.
+- Time from when the participant first opens the **target product's detail page** (`performance.now()` at page load) to the first click on either button, regardless of correctness. This excludes browsing time and isolates the button-decision moment.
 
 **R filter:**
 ```r
@@ -172,14 +173,16 @@ timing <- task_events %>%
 
 ## Exclusion rule
 
-Participants are excluded if they answer **≥ 2 of the 3 validation questions** (Q9, Q14, Q15) incorrectly.
+Participants are excluded if they answer **≥ 2 of the 3 validation questions** (Q9, D1, D2) incorrectly.
 
 **Validation question logic:**
-| ID | Correct response | Bogus flag |
-|----|-----------------|------------|
-| Q9 | Select "Never" (value `1`) | `validation_passed = 0` if any other value |
-| Q14 | Select "Strongly agree" (value `5`) | `validation_passed = 0` if any other value |
-| Q15 | Bogus statement | `validation_passed = 0` if value is `4` or `5` (implausibly high agreement) |
+| ID | Type | Correct response | `validation_passed = 0` when |
+|----|------|-----------------|-------------------------------|
+| Q9 | Instruction-masked attention check | Select "Never" (value `1`) | Any other value selected |
+| D1 | Distraction-task comprehension (step 2 — cheapest product) | Select "Portable Phone Stand (€12.99)" (value `d`) | Any other product selected |
+| D2 | Distraction-task comprehension (step 4 — most reviews) | Select "More than 2,000" (value `d`) | Any other range selected |
+
+D1 and D2 double as engagement checks: participants who did not pay attention to the catalog during distraction steps are likely to answer these incorrectly.
 
 **R exclusion:**
 ```r
@@ -225,6 +228,14 @@ Features:
 | 6 | Yoga Mat Premium | €45.00 | 789 | Sports | Filler |
 | 7 | Manual Coffee Grinder | €28.75 | 156 | Home & Kitchen | Filler |
 | 8 | Resistance Bands Set | €19.99 | 1,876 | Sports | Filler |
+| 9 | Atomic Habits | €16.99 | 1,654 | Books | Filler |
+| 10 | The Psychology of Money | €13.50 | 982 | Books | Filler |
+| 11 | Deep Work | €15.99 | 741 | Books | Filler |
+| 12 | Classic Building Blocks Set | €29.99 | 743 | Toys | Filler |
+| 13 | Magnetic Drawing Board | €17.50 | 421 | Toys | Filler |
+| 14 | Wooden Puzzle Set | €22.99 | 318 | Toys | Filler |
 
 Cheapest product (distraction step 2): **Portable Phone Stand** (€12.99).  
 Most reviewed (distraction step 4): **Portable Phone Stand** (2,341 reviews).
+
+> All new filler products are priced above €12.99 and have fewer than 2,341 reviews, preserving the correct answers for the D1 and D2 validation questions.

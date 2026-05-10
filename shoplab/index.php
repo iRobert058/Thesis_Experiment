@@ -25,27 +25,34 @@ $PRODUCTS = [
     6 => ['id'=>6,'name'=>'Yoga Mat Premium',      'price'=>45.00,'reviews'=>789, 'rating'=>4.4,'category'=>'Sports',        'color'=>'#ede9fe','icon'=>'🧘','desc'=>'Non-slip 6 mm TPE yoga mat with alignment lines and carry strap. Suitable for all yoga styles. 183 × 61 cm.'],
     7 => ['id'=>7,'name'=>'Manual Coffee Grinder', 'price'=>28.75,'reviews'=>156, 'rating'=>4.1,'category'=>'Home & Kitchen','color'=>'#fef9c3','icon'=>'☕','desc'=>'Hand-operated ceramic burr grinder for fresh coffee anywhere. Adjustable coarseness settings, 25 g capacity.'],
     8 => ['id'=>8,'name'=>'Resistance Bands Set',  'price'=>19.99,'reviews'=>1876,'rating'=>4.6,'category'=>'Sports',        'color'=>'#fee2e2','icon'=>'💪','desc'=>'Set of 5 latex resistance bands (2–45 kg). Includes carry bag, door anchor and illustrated exercise guide.'],
+    // Books
+    9  => ['id'=>9, 'name'=>'Atomic Habits',         'price'=>16.99,'reviews'=>1654,'rating'=>4.8,'category'=>'Books',         'color'=>'#fdf4ff','icon'=>'📚','desc'=>'James Clear\'s guide to building good habits and breaking bad ones. Over 10 million copies sold worldwide. Paperback, 320 pages.'],
+    10 => ['id'=>10,'name'=>'The Psychology of Money','price'=>13.50,'reviews'=>982, 'rating'=>4.7,'category'=>'Books',         'color'=>'#f0f9ff','icon'=>'💰','desc'=>'Morgan Housel explores how people think about money and the role of behaviour in financial decisions. Paperback, 256 pages.'],
+    11 => ['id'=>11,'name'=>'Deep Work',              'price'=>15.99,'reviews'=>741, 'rating'=>4.6,'category'=>'Books',         'color'=>'#f0fdf4','icon'=>'🎯','desc'=>'Cal Newport\'s rules for focused success in a distracted world. Packed with case studies and actionable strategies. Paperback, 304 pages.'],
+    // Toys
+    12 => ['id'=>12,'name'=>'Classic Building Blocks Set','price'=>29.99,'reviews'=>743,'rating'=>4.5,'category'=>'Toys',      'color'=>'#fff7ed','icon'=>'🧱','desc'=>'250-piece colourful building block set compatible with major brands. Develops creativity and fine motor skills. Ages 4+.'],
+    13 => ['id'=>13,'name'=>'Magnetic Drawing Board',  'price'=>17.50,'reviews'=>421,'rating'=>4.3,'category'=>'Toys',         'color'=>'#f7fee7','icon'=>'🎨','desc'=>'Mess-free magnetic drawing board with stampers and stencils. Erase with a slider. 30 × 22 cm. Ages 3+.'],
+    14 => ['id'=>14,'name'=>'Wooden Puzzle Set',       'price'=>22.99,'reviews'=>318,'rating'=>4.4,'category'=>'Toys',         'color'=>'#fef9c3','icon'=>'🧩','desc'=>'Set of 4 chunky wooden jigsaw puzzles (12–24 pieces each). Painted with non-toxic dyes. Great for toddlers aged 2–5.'],
 ];
 
 // ═══════════════════════════════════════════════════════════════════
 // SURVEY QUESTIONS (step 6)
 // ═══════════════════════════════════════════════════════════════════
 $SURVEY_QUESTIONS = [
-    ['id'=>'F1', 'text'=>'How often do you shop online in general?',
-     'options'=>['1'=>'Never','2'=>'Rarely','3'=>'Sometimes','4'=>'Often','5'=>'Always'],
-     'is_val'=>false,'correct'=>null,'flag'=>null],
+    // Q9 — instruction-masked attention check (unchanged)
     ['id'=>'Q9', 'text'=>'For quality control purposes, please select "Never" for this item. How often do you return purchased items to an online store?',
      'options'=>['1'=>'Never','2'=>'Rarely','3'=>'Sometimes','4'=>'Often','5'=>'Always'],
      'is_val'=>true,'correct'=>'1','flag'=>null],
-    ['id'=>'F2', 'text'=>'How satisfied are you with online shopping experiences in general?',
-     'options'=>['1'=>'Very dissatisfied','2'=>'Dissatisfied','3'=>'Neutral','4'=>'Satisfied','5'=>'Very satisfied'],
-     'is_val'=>false,'correct'=>null,'flag'=>null],
-    ['id'=>'Q14','text'=>'To verify you are reading carefully: for this item, please select "Strongly agree". I read all instructions before completing a task.',
-     'options'=>['1'=>'Strongly disagree','2'=>'Disagree','3'=>'Neutral','4'=>'Agree','5'=>'Strongly agree'],
-     'is_val'=>true,'correct'=>'5','flag'=>null],
-    ['id'=>'Q15','text'=>'I spend more than 30 hours per week on online shopping.',
-     'options'=>['1'=>'Strongly disagree','2'=>'Disagree','3'=>'Neutral','4'=>'Agree','5'=>'Strongly agree'],
-     'is_val'=>true,'correct'=>null,'flag'=>['4','5']],
+
+    // D1 — comprehension check for distraction step 2 (cheapest product)
+    ['id'=>'D1', 'text'=>'Which of the following products was the cheapest in the online store you just browsed?',
+     'options'=>['a'=>'Yoga Mat Premium','b'=>'Manual Coffee Grinder','c'=>'Bamboo Water Bottle','d'=>'Portable Phone Stand'],
+     'is_val'=>true,'correct'=>'d','flag'=>null],
+
+    // D2 — comprehension check for distraction step 4 (most-reviewed product)
+    ['id'=>'D2', 'text'=>'Approximately how many customer reviews did the most-reviewed product in the store have?',
+     'options'=>['a'=>'Fewer than 500','b'=>'500 – 1,000','c'=>'1,000 – 2,000','d'=>'More than 2,000'],
+     'is_val'=>true,'correct'=>'d','flag'=>null],
 ];
 
 // ═══════════════════════════════════════════════════════════════════
@@ -280,7 +287,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .cat-bar{background:var(--white);border-bottom:1px solid var(--border);overflow-x:auto}
 .cat-bar ul{display:flex;list-style:none;max-width:1200px;margin:0 auto;padding:0 1.5rem}
 .cat-bar a{display:block;padding:.65rem 1rem;font-size:.85rem;color:var(--muted);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent}
-.cat-bar a:hover{color:var(--text);border-color:var(--primary)}
+.cat-bar a:hover,.cat-bar a.active{color:var(--text);border-color:var(--primary)}
 
 /* Task banner */
 .task-banner{background:#eff6ff;border-left:4px solid var(--primary);margin:1.25rem auto;max-width:1200px;padding:.875rem 1.25rem;border-radius:0 var(--radius) var(--radius) 0}
@@ -295,8 +302,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem}
 .section-title{font-size:1.05rem;font-weight:700}
 .filter-bar{display:flex;gap:.5rem;flex-wrap:wrap}
-.filter-chip{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:.3rem .75rem;font-size:.8rem;color:var(--muted);cursor:default}
+.filter-chip{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:.3rem .75rem;font-size:.8rem;color:var(--muted);cursor:pointer;user-select:none}
 .filter-chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.filter-chip:hover:not(.active){border-color:var(--primary);color:var(--primary)}
 .product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.25rem}
 
 /* Product card */
@@ -414,17 +422,25 @@ function openPage(string $title): void {
     echo '</head><body>';
 }
 
-function siteHeader(): void {
+function siteHeader(string $context = 'catalog'): void {
+    $is_product = ($context === 'product');
+    $search_ro  = $is_product ? ' readonly' : '';
     echo '<header class="site-header"><div class="hdr-inner">';
-    echo '<a class="logo" href="#">Shop<em>Lab</em></a>';
+    echo '<a class="logo" href="#" onclick="goHome();return false;">Shop<em>Lab</em></a>';
     echo '<div class="search-wrap"><span class="search-ico">🔍</span>';
-    echo '<input type="text" placeholder="Search products…" tabindex="-1" readonly></div>';
-    echo '<ul class="hdr-nav"><li><a href="#">Home</a></li><li><a href="#">New arrivals</a></li><li><a href="#">Deals</a></li><li><a href="#">Help</a></li></ul>';
+    echo '<input type="text" id="search-input" placeholder="Search products…" tabindex="-1"' . $search_ro . '></div>';
+    echo '<ul class="hdr-nav">';
+    echo '<li><a href="#" onclick="goHome();return false;">Home</a></li>';
+    echo '</ul>';
     echo '<button class="cart-btn" tabindex="-1">🛒 Cart <strong id="cart-count">(0)</strong></button>';
     echo '</div></header>';
     echo '<nav class="cat-bar"><ul>';
     foreach (['All','Electronics','Home & Kitchen','Sports','Books','Toys'] as $c) {
-        echo '<li><a href="#">' . esc($c) . '</a></li>';
+        if ($is_product) {
+            echo '<li><a href="#" class="cat-link" onclick="goHome();return false;">' . esc($c) . '</a></li>';
+        } else {
+            echo '<li><a href="#" class="cat-link" data-filter="' . esc($c) . '">' . esc($c) . '</a></li>';
+        }
     }
     echo '</ul></nav>';
 }
@@ -483,8 +499,8 @@ function renderInterstitial(int $next_step): void {
     echo '<div class="pg-center"><div class="intr-card">';
     stepDots($next_step);
     echo '<div class="ico">⏸</div>';
-    echo '<h2>Ready for the next task?</h2>';
-    echo '<p>Take a moment to relax, then press Continue when you are ready to proceed.</p>';
+    echo '<h2>Are you ready for the next task?</h2>';
+    echo '<p>Press the continue button when you are ready to proceed.</p>';
     echo '<form method="POST" action="index.php">';
     echo '<input type="hidden" name="action" value="continue">';
     echo '<button class="btn-primary" type="submit">Continue →</button>';
@@ -498,33 +514,28 @@ function renderTaskCatalog(int $step, string $sid): void {
     global $PRODUCTS;
     $cfg      = getTaskCfg($step);
     $target   = $PRODUCTS[$cfg['product_id']];
-    $task_msg = 'Browse the store and add "' . $target['name'] . '" to your cart using the correct button.';
+    $task_msg = 'Browse the store and please add the following product to your shopping cart: "' . $target['name'] . '"';
 
     // Mark task as started so task_start is only logged once per step
     $already_started = !empty($_SESSION['task_started'][$step]);
     $_SESSION['task_started'][$step] = true;
 
     openPage('Browse Products');
-    siteHeader();
+    siteHeader('catalog');
     sessionBadge($sid);
     taskBanner($task_msg, $step);
 
     echo '<div class="section">';
     echo '<div class="section-header">';
     echo '<div class="section-title">All Products (' . count($PRODUCTS) . ')</div>';
-    echo '<div class="filter-bar">';
-    foreach (['All','Electronics','Home & Kitchen','Sports'] as $cat) {
-        $active = $cat === 'All' ? ' active' : '';
-        echo '<span class="filter-chip' . $active . '">' . esc($cat) . '</span>';
-    }
-    echo '</div></div>';
+    echo '</div>';
 
     echo '<div class="product-grid">';
     foreach ($PRODUCTS as $p) {
         echo '<form method="POST" action="index.php" style="display:contents">';
         echo '<input type="hidden" name="action" value="view_product">';
         echo '<input type="hidden" name="product_id" value="' . (int)$p['id'] . '">';
-        echo '<button type="submit" class="p-card">';
+        echo '<button type="submit" class="p-card" data-cat="' . esc($p['category']) . '" data-name="' . esc($p['name']) . '">';
         echo '<div class="p-card-img" style="background:' . esc($p['color']) . '">' . $p['icon'] . '</div>';
         echo '<div class="p-card-body">';
         echo '<div class="p-card-cat">' . esc($p['category']) . '</div>';
@@ -557,7 +568,6 @@ function renderTaskCatalog(int $step, string $sid): void {
     function post(data){ data.session_id=SID; fetch('log.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}); }
     function beacon(data){ data.session_id=SID; navigator.sendBeacon('log.php',new Blob([JSON.stringify(data)],{type:'application/json'})); }
 
-    // task_start only once per task step
     if (!{$js_started}) {
         post({event_type:'task_start', step:STEP, condition:COND, target_product_id:TPID});
     }
@@ -567,6 +577,54 @@ function renderTaskCatalog(int $step, string $sid): void {
         beacon({event_type:'page_exit', step:STEP, condition:COND, target_product_id:TPID,
                 ms_page:Math.round(performance.now()-t0)});
     });
+
+    // ── Category filter & search ─────────────────────────────────────
+    var activeFilter = sessionStorage.getItem('catalogFilter') || 'All';
+
+    function applyFilters() {
+        var q = (document.getElementById('search-input').value || '').toLowerCase().trim();
+        document.querySelectorAll('.p-card').forEach(function(card) {
+            var catOk  = activeFilter === 'All' || card.dataset.cat === activeFilter;
+            var nameOk = !q || card.dataset.name.toLowerCase().indexOf(q) !== -1;
+            var show   = catOk && nameOk;
+            var parent = card.parentElement;
+            if (parent && parent.tagName === 'FORM') {
+                parent.style.display = show ? 'contents' : 'none';
+            } else {
+                card.style.display = show ? '' : 'none';
+            }
+        });
+    }
+
+    function setFilter(cat) {
+        activeFilter = cat;
+        sessionStorage.setItem('catalogFilter', cat);
+        document.querySelectorAll('.filter-chip').forEach(function(c){
+            c.classList.toggle('active', c.dataset.filter === cat);
+        });
+        document.querySelectorAll('.cat-link[data-filter]').forEach(function(a){
+            a.classList.toggle('active', a.dataset.filter === cat);
+        });
+        applyFilters();
+    }
+
+    document.querySelectorAll('.filter-chip[data-filter]').forEach(function(chip) {
+        chip.addEventListener('click', function(){ setFilter(this.dataset.filter); });
+    });
+    document.querySelectorAll('.cat-link[data-filter]').forEach(function(a) {
+        a.addEventListener('click', function(e){ e.preventDefault(); setFilter(this.dataset.filter); });
+    });
+    document.getElementById('search-input').addEventListener('input', applyFilters);
+
+    // Restore active filter state on load (e.g. after returning from product detail)
+    setFilter(activeFilter);
+
+    // Logo / Home link on catalog resets filter and scrolls to top
+    window.goHome = function(){
+        document.getElementById('search-input').value = '';
+        setFilter('All');
+        window.scrollTo({top:0, behavior:'smooth'});
+    };
 })();
 </script>
 JS;
@@ -582,20 +640,21 @@ function renderTaskProduct(int $step, int $product_id, string $sid): void {
     $cond      = $cfg['condition'];
 
     openPage($p['name']);
-    siteHeader();
+    siteHeader('product');
     sessionBadge($sid);
 
-    $task_msg = 'Browse the store and add "' . $PRODUCTS[$cfg['product_id']]['name'] . '" to your cart using the correct button.';
+    $task_msg = 'Browse the store and please add the following product to your shopping cart: "' . $PRODUCTS[$cfg['product_id']]['name'] . '"';
     taskBanner($task_msg, $step);
 
     // Back to catalog
     echo '<div class="back-wrap">';
-    echo '<form method="POST" action="index.php" style="display:inline">';
+    echo '<form id="back-form" method="POST" action="index.php" style="display:inline">';
     echo '<input type="hidden" name="action" value="back_to_catalog">';
     echo '<button type="submit" class="back-btn">← Back to catalog</button>';
     echo '</form></div>';
 
-    echo '<div class="breadcrumb"><a href="#">Home</a><span>›</span><a href="#">' . esc($p['category']) . '</a><span>›</span>' . esc($p['name']) . '</div>';
+    $cat_esc = esc($p['category']);
+    echo '<div class="breadcrumb"><a href="#" onclick="goHome();return false;">Home</a><span>›</span><a href="#" onclick="goHomeFiltered(\'' . $cat_esc . '\');return false;">' . $cat_esc . '</a><span>›</span>' . esc($p['name']) . '</div>';
 
     echo '<div class="pd-wrap"><div class="pd-grid">';
     echo '<div class="pd-img" style="background:' . esc($p['color']) . '">' . $p['icon'] . '</div>';
@@ -650,6 +709,13 @@ function renderTaskProduct(int $step, int $product_id, string $sid): void {
             .then(function(){ if(cb) cb(); }).catch(function(){ if(cb) cb(); });
     }
     function beacon(data){ data.session_id=SID; navigator.sendBeacon('log.php',new Blob([JSON.stringify(data)],{type:'application/json'})); }
+
+    // Navigate back to catalog (called from logo, Home link, breadcrumb)
+    window.goHome = function(){ document.getElementById('back-form').submit(); };
+    window.goHomeFiltered = function(cat){
+        sessionStorage.setItem('catalogFilter', cat);
+        document.getElementById('back-form').submit();
+    };
 
     // product_view — fired whenever this detail page loads (target or not)
     post({event_type:'product_view', step:STEP, condition:COND,
@@ -740,16 +806,15 @@ function renderDistraction(int $step, string $sid): void {
         : 'Browse the products below. Which product has the most reviews? Click on it to continue.';
 
     openPage('Browse Products');
-    siteHeader();
+    siteHeader('catalog');
     sessionBadge($sid);
     taskBanner($msg, $step);
 
     echo '<div class="section">';
-    echo '<div class="section-header"><div class="section-title">All Products (' . count($PRODUCTS) . ')</div>';
-    echo '<div class="filter-bar"><span class="filter-chip active">All</span><span class="filter-chip">Electronics</span><span class="filter-chip">Home & Kitchen</span><span class="filter-chip">Sports</span></div></div>';
+    echo '<div class="section-header"><div class="section-title">All Products (' . count($PRODUCTS) . ')</div></div>';
     echo '<div class="product-grid">';
     foreach ($PRODUCTS as $p) {
-        echo '<button class="p-card" data-pid="' . (int)$p['id'] . '" data-name="' . esc($p['name']) . '" onclick="distractionClick(this,event)">';
+        echo '<button class="p-card" data-pid="' . (int)$p['id'] . '" data-cat="' . esc($p['category']) . '" data-name="' . esc($p['name']) . '" onclick="distractionClick(this,event)">';
         echo '<div class="p-card-img" style="background:' . esc($p['color']) . '">' . $p['icon'] . '</div>';
         echo '<div class="p-card-body">';
         echo '<div class="p-card-cat">' . esc($p['category']) . '</div>';
@@ -799,6 +864,51 @@ function renderDistraction(int $step, string $sid): void {
         ai.type='hidden'; ai.name='action'; ai.value='advance';
         f.appendChild(ai); document.body.appendChild(f); f.submit();
     };
+
+    // ── Category filter & search ─────────────────────────────────────
+    var activeFilter = 'All';
+
+    function applyFilters() {
+        var q = (document.getElementById('search-input').value || '').toLowerCase().trim();
+        document.querySelectorAll('.p-card').forEach(function(card) {
+            var catOk  = activeFilter === 'All' || card.dataset.cat === activeFilter;
+            var nameOk = !q || card.dataset.name.toLowerCase().indexOf(q) !== -1;
+            var show   = catOk && nameOk;
+            var parent = card.parentElement;
+            if (parent && parent.tagName === 'FORM') {
+                parent.style.display = show ? 'contents' : 'none';
+            } else {
+                card.style.display = show ? '' : 'none';
+            }
+        });
+    }
+
+    function setFilter(cat) {
+        activeFilter = cat;
+        document.querySelectorAll('.filter-chip').forEach(function(c){
+            c.classList.toggle('active', c.dataset.filter === cat);
+        });
+        document.querySelectorAll('.cat-link[data-filter]').forEach(function(a){
+            a.classList.toggle('active', a.dataset.filter === cat);
+        });
+        applyFilters();
+    }
+
+    document.querySelectorAll('.filter-chip[data-filter]').forEach(function(chip) {
+        chip.addEventListener('click', function(){ setFilter(this.dataset.filter); });
+    });
+    document.querySelectorAll('.cat-link[data-filter]').forEach(function(a) {
+        a.addEventListener('click', function(e){ e.preventDefault(); setFilter(this.dataset.filter); });
+    });
+    document.getElementById('search-input').addEventListener('input', applyFilters);
+
+    setFilter('All');
+
+    window.goHome = function(){
+        document.getElementById('search-input').value = '';
+        setFilter('All');
+        window.scrollTo({top:0, behavior:'smooth'});
+    };
 })();
 </script>
 JS;
@@ -815,7 +925,7 @@ function renderSurvey(string $sid): void {
 
     echo '<div class="survey-wrap"><div class="survey-card">';
     echo '<h2>Quick Shopping Habits Survey</h2>';
-    echo '<p class="sub">This survey has 5 questions about your online shopping habits and should take less than 2 minutes.</p>';
+    echo '<p class="sub">This survey has 3 questions and should take less than 2 minutes.</p>';
     echo '<form method="POST" action="index.php" id="sform">';
     echo '<input type="hidden" name="action" value="submit_survey">';
 

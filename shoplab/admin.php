@@ -79,7 +79,7 @@ function summariseSessions(array $rows): array {
     $sessions = [];
 
     // Validation question IDs and the conditions for passing
-    $val_ids = ['Q9', 'Q14', 'Q15'];
+    $val_ids = ['Q9', 'D1', 'D2'];
 
     foreach ($rows as $r) {
         $sid = $r['session_id'] ?? '';
