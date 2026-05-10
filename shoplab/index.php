@@ -18,7 +18,7 @@ define('EVENTS_FILE',  DATA_DIR . '/events.csv');
 // ═══════════════════════════════════════════════════════════════════
 $PRODUCTS = [
     1 => ['id'=>1,'name'=>'Wireless Earbuds Pro', 'price'=>39.99,'reviews'=>847, 'rating'=>4.4,'category'=>'Electronics',   'color'=>'#dbeafe','icon'=>'🎧','desc'=>'High-quality wireless earbuds with active noise cancellation and 24-hour battery life. Compatible with iOS and Android.'],
-    2 => ['id'=>2,'name'=>'Bamboo Water Bottle',   'price'=>24.95,'reviews'=>312, 'rating'=>4.2,'category'=>'Home & Kitchen','color'=>'#dcfce7','icon'=>'🍶','desc'=>'Eco-friendly insulated bottle, BPA-free. Keeps drinks cold 24 h and hot 12 h. 500 ml, dishwasher safe.'],
+    2 => ['id'=>2,'name'=>'Water Bottle',   'price'=>24.95,'reviews'=>312, 'rating'=>4.2,'category'=>'Home & Kitchen','color'=>'#dcfce7','icon'=>'🍶','desc'=>'Eco-friendly insulated bottle, BPA-free. Keeps drinks cold 24 h and hot 12 h. 500 ml, dishwasher safe.'],
     3 => ['id'=>3,'name'=>'Running Shoes X200',    'price'=>89.00,'reviews'=>1203,'rating'=>4.6,'category'=>'Sports',        'color'=>'#fef3c7','icon'=>'👟','desc'=>'Lightweight running shoes with responsive cushioning. Breathable mesh upper, durable rubber outsole. Sizes 36–46.'],
     4 => ['id'=>4,'name'=>'Bamboo Desk Organizer', 'price'=>32.50,'reviews'=>564, 'rating'=>4.3,'category'=>'Home & Kitchen','color'=>'#f5f0eb','icon'=>'🗂','desc'=>'Premium bamboo desk organizer with 6 compartments. Keeps pens, papers and accessories tidy. 30 × 20 × 8 cm.'],
     5 => ['id'=>5,'name'=>'Portable Phone Stand',  'price'=>12.99,'reviews'=>2341,'rating'=>4.7,'category'=>'Electronics',   'color'=>'#f3f4f6','icon'=>'📱','desc'=>'Adjustable aluminium phone stand compatible with all smartphones and tablets. Folds flat for easy storage.'],
@@ -26,9 +26,9 @@ $PRODUCTS = [
     7 => ['id'=>7,'name'=>'Manual Coffee Grinder', 'price'=>28.75,'reviews'=>156, 'rating'=>4.1,'category'=>'Home & Kitchen','color'=>'#fef9c3','icon'=>'☕','desc'=>'Hand-operated ceramic burr grinder for fresh coffee anywhere. Adjustable coarseness settings, 25 g capacity.'],
     8 => ['id'=>8,'name'=>'Resistance Bands Set',  'price'=>19.99,'reviews'=>1876,'rating'=>4.6,'category'=>'Sports',        'color'=>'#fee2e2','icon'=>'💪','desc'=>'Set of 5 latex resistance bands (2–45 kg). Includes carry bag, door anchor and illustrated exercise guide.'],
     // Books
-    9  => ['id'=>9, 'name'=>'Atomic Habits',         'price'=>16.99,'reviews'=>1654,'rating'=>4.8,'category'=>'Books',         'color'=>'#fdf4ff','icon'=>'📚','desc'=>'James Clear\'s guide to building good habits and breaking bad ones. Over 10 million copies sold worldwide. Paperback, 320 pages.'],
-    10 => ['id'=>10,'name'=>'The Psychology of Money','price'=>13.50,'reviews'=>982, 'rating'=>4.7,'category'=>'Books',         'color'=>'#f0f9ff','icon'=>'💰','desc'=>'Morgan Housel explores how people think about money and the role of behaviour in financial decisions. Paperback, 256 pages.'],
-    11 => ['id'=>11,'name'=>'Deep Work',              'price'=>15.99,'reviews'=>741, 'rating'=>4.6,'category'=>'Books',         'color'=>'#f0fdf4','icon'=>'🎯','desc'=>'Cal Newport\'s rules for focused success in a distracted world. Packed with case studies and actionable strategies. Paperback, 304 pages.'],
+    9  => ['id'=>9, 'name'=>'Atomical Habituals',         'price'=>16.99,'reviews'=>1654,'rating'=>4.8,'category'=>'Books',         'color'=>'#fdf4ff','icon'=>'📚','desc'=>'James Clear\'s guide to building good habits and breaking bad ones. Over 10 million copies sold worldwide. Paperback, 320 pages.'],
+    10 => ['id'=>10,'name'=>'The Psychology of being rich','price'=>13.50,'reviews'=>982, 'rating'=>4.7,'category'=>'Books',         'color'=>'#f0f9ff','icon'=>'💰','desc'=>'This book explores how people think about money and the role of behaviour in financial decisions. Paperback, 256 pages.'],
+    11 => ['id'=>11,'name'=>'Deep Workings',              'price'=>15.99,'reviews'=>741, 'rating'=>4.6,'category'=>'Books',         'color'=>'#f0fdf4','icon'=>'🎯','desc'=>'Cal Newport\'s rules for focused success in a distracted world. Packed with case studies and actionable strategies. Paperback, 304 pages.'],
     // Toys
     12 => ['id'=>12,'name'=>'Classic Building Blocks Set','price'=>29.99,'reviews'=>743,'rating'=>4.5,'category'=>'Toys',      'color'=>'#fff7ed','icon'=>'🧱','desc'=>'250-piece colourful building block set compatible with major brands. Develops creativity and fine motor skills. Ages 4+.'],
     13 => ['id'=>13,'name'=>'Magnetic Drawing Board',  'price'=>17.50,'reviews'=>421,'rating'=>4.3,'category'=>'Toys',         'color'=>'#f7fee7','icon'=>'🎨','desc'=>'Mess-free magnetic drawing board with stampers and stencils. Erase with a slider. 30 × 22 cm. Ages 3+.'],
@@ -310,7 +310,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 /* Product card */
 .p-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--sh);transition:box-shadow .15s,transform .15s;cursor:pointer;display:block;width:100%;text-align:left;font:inherit;color:inherit;appearance:none;-webkit-appearance:none;padding:0}
 .p-card:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
-.p-card-img{width:100%;height:160px;display:flex;align-items:center;justify-content:center;font-size:3.5rem}
+.p-card-img{width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:3.5rem;overflow:hidden}
+.p-card-img img{width:100%;height:100%;object-fit:cover;display:block}
 .p-card-body{padding:.875rem}
 .p-card-cat{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem}
 .p-card-name{font-size:.9rem;font-weight:600;margin-bottom:.3rem;line-height:1.3}
@@ -335,7 +336,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 /* Product detail */
 .pd-wrap{max-width:1200px;margin:1.25rem auto;padding:0 1.5rem}
 .pd-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;background:var(--white);border-radius:var(--radius);box-shadow:var(--sh-md);padding:2rem}
-.pd-img{border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:7rem;aspect-ratio:1}
+.pd-img{border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:7rem;aspect-ratio:1;overflow:hidden}
+.pd-img img{width:100%;height:100%;object-fit:cover;display:block}
 .pd-info h1{font-size:1.4rem;font-weight:700;line-height:1.3;margin-bottom:.5rem}
 .pd-cat{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem}
 .pd-stars{font-size:.9rem;margin-bottom:.75rem;display:flex;align-items:center;gap:.4rem}
@@ -536,7 +538,9 @@ function renderTaskCatalog(int $step, string $sid): void {
         echo '<input type="hidden" name="action" value="view_product">';
         echo '<input type="hidden" name="product_id" value="' . (int)$p['id'] . '">';
         echo '<button type="submit" class="p-card" data-cat="' . esc($p['category']) . '" data-name="' . esc($p['name']) . '">';
-        echo '<div class="p-card-img" style="background:' . esc($p['color']) . '">' . $p['icon'] . '</div>';
+        echo '<div class="p-card-img" style="background:' . esc($p['color']) . '" data-icon="' . esc($p['icon']) . '">';
+        echo '<img src="images/' . (int)$p['id'] . '.png" alt="' . esc($p['name']) . '" loading="lazy" onerror="var d=this.parentElement;d.textContent=d.dataset.icon;">';
+        echo '</div>';
         echo '<div class="p-card-body">';
         echo '<div class="p-card-cat">' . esc($p['category']) . '</div>';
         echo '<div class="p-card-name">' . esc($p['name']) . '</div>';
@@ -657,7 +661,9 @@ function renderTaskProduct(int $step, int $product_id, string $sid): void {
     echo '<div class="breadcrumb"><a href="#" onclick="goHome();return false;">Home</a><span>›</span><a href="#" onclick="goHomeFiltered(\'' . $cat_esc . '\');return false;">' . $cat_esc . '</a><span>›</span>' . esc($p['name']) . '</div>';
 
     echo '<div class="pd-wrap"><div class="pd-grid">';
-    echo '<div class="pd-img" style="background:' . esc($p['color']) . '">' . $p['icon'] . '</div>';
+    echo '<div class="pd-img" style="background:' . esc($p['color']) . '" data-icon="' . esc($p['icon']) . '">';
+    echo '<img src="images/' . (int)$p['id'] . '.png" alt="' . esc($p['name']) . '" onerror="var d=this.parentElement;d.textContent=d.dataset.icon;">';
+    echo '</div>';
     echo '<div class="pd-info">';
     echo '<div class="pd-cat">' . esc($p['category']) . '</div>';
     echo '<h1>' . esc($p['name']) . '</h1>';
@@ -815,7 +821,9 @@ function renderDistraction(int $step, string $sid): void {
     echo '<div class="product-grid">';
     foreach ($PRODUCTS as $p) {
         echo '<button class="p-card" data-pid="' . (int)$p['id'] . '" data-cat="' . esc($p['category']) . '" data-name="' . esc($p['name']) . '" onclick="distractionClick(this,event)">';
-        echo '<div class="p-card-img" style="background:' . esc($p['color']) . '">' . $p['icon'] . '</div>';
+        echo '<div class="p-card-img" style="background:' . esc($p['color']) . '" data-icon="' . esc($p['icon']) . '">';
+        echo '<img src="images/' . (int)$p['id'] . '.png" alt="' . esc($p['name']) . '" loading="lazy" onerror="var d=this.parentElement;d.textContent=d.dataset.icon;">';
+        echo '</div>';
         echo '<div class="p-card-body">';
         echo '<div class="p-card-cat">' . esc($p['category']) . '</div>';
         echo '<div class="p-card-name">' . esc($p['name']) . '</div>';

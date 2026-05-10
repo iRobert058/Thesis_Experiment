@@ -65,8 +65,8 @@ function parseCsv(string $file): array {
     $rows = [];
     $fp   = fopen($file, 'r');
     if (!$fp) return [];
-    $header = fgetcsv($fp);
-    while (($line = fgetcsv($fp)) !== false) {
+    $header = fgetcsv($fp, 0, ',', '"', '\\');
+    while (($line = fgetcsv($fp, 0, ',', '"', '\\')) !== false) {
         if (count($line) === count($header)) {
             $rows[] = array_combine($header, $line);
         }
