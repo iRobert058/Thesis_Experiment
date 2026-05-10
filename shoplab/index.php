@@ -29,30 +29,36 @@ $PRODUCTS = [
 
 // ═══════════════════════════════════════════════════════════════════
 // SURVEY QUESTIONS (step 6)
-//   correct = required answer value (null = no fixed correct answer)
-//   flag    = values that mark the bogus-item as failed
 // ═══════════════════════════════════════════════════════════════════
 $SURVEY_QUESTIONS = [
     ['id'=>'F1', 'text'=>'How often do you shop online in general?',
      'options'=>['1'=>'Never','2'=>'Rarely','3'=>'Sometimes','4'=>'Often','5'=>'Always'],
      'is_val'=>false,'correct'=>null,'flag'=>null],
-
     ['id'=>'Q9', 'text'=>'For quality control purposes, please select "Never" for this item. How often do you return purchased items to an online store?',
      'options'=>['1'=>'Never','2'=>'Rarely','3'=>'Sometimes','4'=>'Often','5'=>'Always'],
      'is_val'=>true,'correct'=>'1','flag'=>null],
-
     ['id'=>'F2', 'text'=>'How satisfied are you with online shopping experiences in general?',
      'options'=>['1'=>'Very dissatisfied','2'=>'Dissatisfied','3'=>'Neutral','4'=>'Satisfied','5'=>'Very satisfied'],
      'is_val'=>false,'correct'=>null,'flag'=>null],
-
     ['id'=>'Q14','text'=>'To verify you are reading carefully: for this item, please select "Strongly agree". I read all instructions before completing a task.',
      'options'=>['1'=>'Strongly disagree','2'=>'Disagree','3'=>'Neutral','4'=>'Agree','5'=>'Strongly agree'],
      'is_val'=>true,'correct'=>'5','flag'=>null],
-
     ['id'=>'Q15','text'=>'I spend more than 30 hours per week on online shopping.',
      'options'=>['1'=>'Strongly disagree','2'=>'Disagree','3'=>'Neutral','4'=>'Agree','5'=>'Strongly agree'],
      'is_val'=>true,'correct'=>null,'flag'=>['4','5']],
 ];
+
+// ═══════════════════════════════════════════════════════════════════
+// TASK CONFIGURATION
+// ═══════════════════════════════════════════════════════════════════
+function getTaskCfg(int $step): array {
+    return [
+        1 => ['condition'=>'standard','product_id'=>1,'label'=>'Standard-A'],
+        3 => ['condition'=>'standard','product_id'=>2,'label'=>'Standard-B'],
+        5 => ['condition'=>'modified','product_id'=>3,'label'=>'Modified-A'],
+        7 => ['condition'=>'modified','product_id'=>4,'label'=>'Modified-B'],
+    ][$step];
+}
 
 // ═══════════════════════════════════════════════════════════════════
 // HELPERS
@@ -69,7 +75,7 @@ function generateSessionId(): string {
 
 function nowIso(): string {
     $dt = new DateTime('now', new DateTimeZone('UTC'));
-    $ms = str_pad((string)(int)(microtime(true) * 1000 % 1000), 3, '0', STR_PAD_LEFT);
+    $ms = str_pad((string)((int)(microtime(true) * 1000) % 1000), 3, '0', STR_PAD_LEFT);
     return $dt->format('Y-m-d\TH:i:s') . '.' . $ms . 'Z';
 }
 
@@ -117,10 +123,13 @@ function esc(string $s): string {
     return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
 }
 
+function jsStr(string $s): string {
+    return htmlspecialchars($s, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+}
+
 // ═══════════════════════════════════════════════════════════════════
-// INITIALISE SESSION ON FIRST VISIT (step 0)
-// Generate the session ID immediately so it is visible on the start page.
-// session_start event is only logged when the participant clicks "Start".
+// INITIALISE SESSION ON FIRST VISIT
+// Session ID is generated on step 0 so it is visible on the start page.
 // ═══════════════════════════════════════════════════════════════════
 if (empty($_SESSION['step'])) {
     $_SESSION['step'] = 0;
@@ -130,12 +139,14 @@ if ($_SESSION['step'] === 0 && empty($_SESSION['session_id'])) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// POST HANDLER — all state transitions
+// POST HANDLER
 // ═══════════════════════════════════════════════════════════════════
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
     $cur    = (int)($_SESSION['step'] ?? 0);
     $intr   = !empty($_SESSION['show_interstitial']);
+
+    $task_steps = [1, 3, 5, 7];
 
     // ── Start experiment ──────────────────────────────────────────
     if ($action === 'start' && $cur === 0 && !$intr) {
@@ -149,12 +160,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // ── Continue past interstitial ────────────────────────────────
     if ($action === 'continue' && $intr) {
         $_SESSION['show_interstitial'] = false;
+        unset($_SESSION['task_product_view']);   // reset any stale browsing state
         appendEvent(base(['event_type'=>'page_enter','step'=>$cur]));
         header('Location: index.php'); exit;
     }
 
-    // ── Advance after task or distraction (JS logs events) ────────
+    // ── View a product within a task step ────────────────────────
+    if ($action === 'view_product' && !$intr && in_array($cur, $task_steps, true)) {
+        $pid = (int)($_POST['product_id'] ?? 0);
+        global $PRODUCTS;
+        if (isset($PRODUCTS[$pid])) {
+            $_SESSION['task_product_view'] = $pid;
+        }
+        header('Location: index.php'); exit;
+    }
+
+    // ── Back to catalog from product detail ───────────────────────
+    if ($action === 'back_to_catalog' && !$intr && in_array($cur, $task_steps, true)) {
+        unset($_SESSION['task_product_view']);
+        header('Location: index.php'); exit;
+    }
+
+    // ── Advance after task or distraction (JS logs events first) ─
     if ($action === 'advance' && !$intr && $cur >= 1 && $cur <= 7) {
+        unset($_SESSION['task_product_view']);
+        unset($_SESSION['task_started'][$cur]);
         $next = $cur + 1;
         $_SESSION['step'] = $next;
         if ($next === 8) {
@@ -181,13 +211,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
             appendEvent(base([
-                'event_type'              => 'survey_response',
-                'step'                    => 6,
-                'question_id'             => $q['id'],
-                'question_text'           => $q['text'],
-                'answer_value'            => $ans,
-                'is_validation_question'  => $q['is_val'] ? '1' : '0',
-                'validation_passed'       => $vp,
+                'event_type'             => 'survey_response',
+                'step'                   => 6,
+                'question_id'            => $q['id'],
+                'question_text'          => $q['text'],
+                'answer_value'           => $ans,
+                'is_validation_question' => $q['is_val'] ? '1' : '0',
+                'validation_passed'      => $vp,
             ]));
         }
         appendEvent(base(['event_type'=>'page_exit','step'=>6]));
@@ -240,7 +270,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .logo em{color:var(--text);font-style:normal}
 .search-wrap{flex:1;position:relative;min-width:0}
 .search-wrap input{width:100%;padding:.5rem 1rem .5rem 2.4rem;border:1px solid var(--border);border-radius:20px;font-size:.9rem;background:var(--bg);color:var(--text);outline:none}
-.search-ico{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.95rem}
+.search-ico{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.95rem;pointer-events:none}
 .hdr-nav{display:flex;gap:1.25rem;list-style:none}
 .hdr-nav a{color:var(--muted);text-decoration:none;font-size:.875rem;white-space:nowrap}
 .hdr-nav a:hover{color:var(--text)}
@@ -260,13 +290,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 /* Session ID badge — fixed top-right on experiment pages */
 .session-badge{position:fixed;top:70px;right:.875rem;background:rgba(255,255,255,.92);border:1px solid var(--border);border-radius:6px;padding:.2rem .5rem;font-size:.68rem;color:var(--muted);z-index:300;backdrop-filter:blur(4px);box-shadow:var(--sh);line-height:1.4;pointer-events:none}
 
-/* Product grid */
+/* Catalog section */
 .section{max-width:1200px;margin:0 auto;padding:1.5rem}
-.section-title{font-size:1.05rem;font-weight:700;margin-bottom:1rem}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem}
+.section-title{font-size:1.05rem;font-weight:700}
+.filter-bar{display:flex;gap:.5rem;flex-wrap:wrap}
+.filter-chip{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:.3rem .75rem;font-size:.8rem;color:var(--muted);cursor:default}
+.filter-chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
 .product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.25rem}
 
 /* Product card */
-.p-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--sh);transition:box-shadow .15s,transform .15s;cursor:pointer;display:block;width:100%;text-align:left;font:inherit;color:inherit;appearance:none;-webkit-appearance:none}
+.p-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--sh);transition:box-shadow .15s,transform .15s;cursor:pointer;display:block;width:100%;text-align:left;font:inherit;color:inherit;appearance:none;-webkit-appearance:none;padding:0}
 .p-card:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
 .p-card-img{width:100%;height:160px;display:flex;align-items:center;justify-content:center;font-size:3.5rem}
 .p-card-body{padding:.875rem}
@@ -279,14 +313,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .p-card-price{font-size:1.1rem;font-weight:700;color:var(--primary)}
 .p-card-rev{font-size:.75rem;color:var(--muted)}
 
+/* Back link */
+.back-wrap{max-width:1200px;margin:.875rem auto 0;padding:0 1.5rem}
+.back-btn{background:none;border:none;color:var(--muted);font-size:.875rem;cursor:pointer;display:inline-flex;align-items:center;gap:.3rem;padding:.3rem 0;font-family:inherit}
+.back-btn:hover{color:var(--primary)}
+
 /* Breadcrumb */
-.breadcrumb{max-width:1200px;margin:1rem auto 0;padding:0 1.5rem;font-size:.8rem;color:var(--muted)}
+.breadcrumb{max-width:1200px;margin:.5rem auto 0;padding:0 1.5rem;font-size:.8rem;color:var(--muted)}
 .breadcrumb a{color:var(--muted);text-decoration:none}
 .breadcrumb a:hover{text-decoration:underline}
 .breadcrumb span{margin:0 .35rem}
 
 /* Product detail */
-.pd-wrap{max-width:1200px;margin:1.5rem auto;padding:0 1.5rem}
+.pd-wrap{max-width:1200px;margin:1.25rem auto;padding:0 1.5rem}
 .pd-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;background:var(--white);border-radius:var(--radius);box-shadow:var(--sh-md);padding:2rem}
 .pd-img{border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:7rem;aspect-ratio:1}
 .pd-info h1{font-size:1.4rem;font-weight:700;line-height:1.3;margin-bottom:.5rem}
@@ -302,6 +341,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .btn-atc:hover{background:var(--primary-h)}
 .btn-bn{background:var(--orange);color:#fff}
 .btn-bn:hover{background:var(--orange-h)}
+
+/* Toast notification */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:#1e293b;color:#fff;padding:.65rem 1.25rem;border-radius:var(--radius);font-size:.875rem;font-weight:600;opacity:0;transition:transform .25s,opacity .25s;z-index:500;white-space:nowrap;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 
 /* Start / end pages */
 .pg-center{min-height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;padding:2rem}
@@ -377,7 +420,7 @@ function siteHeader(): void {
     echo '<div class="search-wrap"><span class="search-ico">🔍</span>';
     echo '<input type="text" placeholder="Search products…" tabindex="-1" readonly></div>';
     echo '<ul class="hdr-nav"><li><a href="#">Home</a></li><li><a href="#">New arrivals</a></li><li><a href="#">Deals</a></li><li><a href="#">Help</a></li></ul>';
-    echo '<button class="cart-btn" tabindex="-1">🛒 Cart <strong>(0)</strong></button>';
+    echo '<button class="cart-btn" tabindex="-1">🛒 Cart <strong id="cart-count">(0)</strong></button>';
     echo '</div></header>';
     echo '<nav class="cat-bar"><ul>';
     foreach (['All','Electronics','Home & Kitchen','Sports','Books','Toys'] as $c) {
@@ -387,9 +430,7 @@ function siteHeader(): void {
 }
 
 function sessionBadge(string $sid): void {
-    if ($sid) {
-        echo '<div class="session-badge">Session: <strong>' . esc($sid) . '</strong></div>';
-    }
+    if ($sid) echo '<div class="session-badge">Session: <strong>' . esc($sid) . '</strong></div>';
 }
 
 function taskBanner(string $msg, int $step): void {
@@ -422,15 +463,12 @@ function closePage(): void {
 
 function renderStart(string $sid): void {
     openPage('Welcome to ShopLab');
-    echo '<div class="pg-center">';
-    echo '<div class="start-card">';
+    echo '<div class="pg-center"><div class="start-card">';
     echo '<div style="font-size:2.5rem;margin-bottom:.5rem">🛍</div>';
     echo '<h1>Welcome to ShopLab</h1>';
     echo '<p>You are about to complete a short shopping task. Your unique session ID is shown below — you will need to enter it in the survey at the end.</p>';
-    echo '<div class="sid-box">';
-    echo '<div class="sid-label">Your session ID</div>';
-    echo '<div class="sid-value">' . esc($sid) . '</div>';
-    echo '</div>';
+    echo '<div class="sid-box"><div class="sid-label">Your session ID</div>';
+    echo '<div class="sid-value">' . esc($sid) . '</div></div>';
     echo '<form method="POST" action="index.php">';
     echo '<input type="hidden" name="action" value="start">';
     echo '<button class="btn-primary" type="submit">Start experiment →</button>';
@@ -442,8 +480,7 @@ function renderStart(string $sid): void {
 
 function renderInterstitial(int $next_step): void {
     openPage('Ready?');
-    echo '<div class="pg-center">';
-    echo '<div class="intr-card">';
+    echo '<div class="pg-center"><div class="intr-card">';
     stepDots($next_step);
     echo '<div class="ico">⏸</div>';
     echo '<h2>Ready for the next task?</h2>';
@@ -456,25 +493,107 @@ function renderInterstitial(int $next_step): void {
     closePage();
 }
 
-function renderTask(int $step, string $sid): void {
+// ── Task: catalog browse view ──────────────────────────────────────
+function renderTaskCatalog(int $step, string $sid): void {
     global $PRODUCTS;
+    $cfg      = getTaskCfg($step);
+    $target   = $PRODUCTS[$cfg['product_id']];
+    $task_msg = 'Browse the store and add "' . $target['name'] . '" to your cart using the correct button.';
 
-    $cfg_map = [
-        1 => ['condition'=>'standard','label'=>'Standard-A','product_id'=>1],
-        3 => ['condition'=>'standard','label'=>'Standard-B','product_id'=>2],
-        5 => ['condition'=>'modified','label'=>'Modified-A','product_id'=>3],
-        7 => ['condition'=>'modified','label'=>'Modified-B','product_id'=>4],
-    ];
-    $cfg  = $cfg_map[$step];
-    $p    = $PRODUCTS[$cfg['product_id']];
-    $cond = $cfg['condition'];
+    // Mark task as started so task_start is only logged once per step
+    $already_started = !empty($_SESSION['task_started'][$step]);
+    $_SESSION['task_started'][$step] = true;
+
+    openPage('Browse Products');
+    siteHeader();
+    sessionBadge($sid);
+    taskBanner($task_msg, $step);
+
+    echo '<div class="section">';
+    echo '<div class="section-header">';
+    echo '<div class="section-title">All Products (' . count($PRODUCTS) . ')</div>';
+    echo '<div class="filter-bar">';
+    foreach (['All','Electronics','Home & Kitchen','Sports'] as $cat) {
+        $active = $cat === 'All' ? ' active' : '';
+        echo '<span class="filter-chip' . $active . '">' . esc($cat) . '</span>';
+    }
+    echo '</div></div>';
+
+    echo '<div class="product-grid">';
+    foreach ($PRODUCTS as $p) {
+        echo '<form method="POST" action="index.php" style="display:contents">';
+        echo '<input type="hidden" name="action" value="view_product">';
+        echo '<input type="hidden" name="product_id" value="' . (int)$p['id'] . '">';
+        echo '<button type="submit" class="p-card">';
+        echo '<div class="p-card-img" style="background:' . esc($p['color']) . '">' . $p['icon'] . '</div>';
+        echo '<div class="p-card-body">';
+        echo '<div class="p-card-cat">' . esc($p['category']) . '</div>';
+        echo '<div class="p-card-name">' . esc($p['name']) . '</div>';
+        echo '<div class="p-card-stars">' . starsHtml($p['rating']) . '</div>';
+        echo '<div class="p-card-row">';
+        echo '<span class="p-card-price">€' . number_format($p['price'], 2) . '</span>';
+        echo '<span class="p-card-rev">(' . number_format($p['reviews']) . ' reviews)</span>';
+        echo '</div></div></button></form>';
+    }
+    echo '</div></div>';
+
+    siteFooter();
+
+    $js_step      = $step;
+    $js_cond      = $cfg['condition'];
+    $js_pid       = $cfg['product_id'];
+    $js_sid       = jsStr($sid);
+    $js_started   = $already_started ? 'true' : 'false';
+
+    echo <<<JS
+<script>
+(function(){
+    var t0   = performance.now();
+    var SID  = "{$js_sid}";
+    var STEP = {$js_step};
+    var COND = "{$js_cond}";
+    var TPID = {$js_pid};
+
+    function post(data){ data.session_id=SID; fetch('log.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}); }
+    function beacon(data){ data.session_id=SID; navigator.sendBeacon('log.php',new Blob([JSON.stringify(data)],{type:'application/json'})); }
+
+    // task_start only once per task step
+    if (!{$js_started}) {
+        post({event_type:'task_start', step:STEP, condition:COND, target_product_id:TPID});
+    }
+    post({event_type:'page_enter', step:STEP, condition:COND, target_product_id:TPID});
+
+    window.addEventListener('beforeunload', function(){
+        beacon({event_type:'page_exit', step:STEP, condition:COND, target_product_id:TPID,
+                ms_page:Math.round(performance.now()-t0)});
+    });
+})();
+</script>
+JS;
+    closePage();
+}
+
+// ── Task: product detail view ──────────────────────────────────────
+function renderTaskProduct(int $step, int $product_id, string $sid): void {
+    global $PRODUCTS;
+    $cfg       = getTaskCfg($step);
+    $is_target = ($product_id === $cfg['product_id']);
+    $p         = $PRODUCTS[$product_id];
+    $cond      = $cfg['condition'];
 
     openPage($p['name']);
     siteHeader();
     sessionBadge($sid);
 
-    $task_msg = 'Find "' . $p['name'] . '" and add it to your cart using the correct button.';
+    $task_msg = 'Browse the store and add "' . $PRODUCTS[$cfg['product_id']]['name'] . '" to your cart using the correct button.';
     taskBanner($task_msg, $step);
+
+    // Back to catalog
+    echo '<div class="back-wrap">';
+    echo '<form method="POST" action="index.php" style="display:inline">';
+    echo '<input type="hidden" name="action" value="back_to_catalog">';
+    echo '<button type="submit" class="back-btn">← Back to catalog</button>';
+    echo '</form></div>';
 
     echo '<div class="breadcrumb"><a href="#">Home</a><span>›</span><a href="#">' . esc($p['category']) . '</a><span>›</span>' . esc($p['name']) . '</div>';
 
@@ -488,10 +607,10 @@ function renderTask(int $step, string $sid): void {
     echo '<p class="pd-desc">' . esc($p['desc']) . '</p>';
     echo '<div class="pd-stock">✓ In stock — ships within 1–2 business days</div>';
 
-    // Button order: the ONLY difference between standard and modified
+    // Button order: matches the condition for ALL products shown during this step,
+    // keeping the UI consistent (as it would be in a real store).
     $btn_atc = '<button class="pd-btn btn-atc" data-btn="add_to_cart">Add to cart</button>';
     $btn_bn  = '<button class="pd-btn btn-bn"  data-btn="buy_now">Buy now</button>';
-
     echo '<div id="btn-area">';
     if ($cond === 'standard') {
         echo $btn_atc . $btn_bn;
@@ -501,82 +620,99 @@ function renderTask(int $step, string $sid): void {
     echo '</div>';
     echo '</div></div></div>'; // pd-info / pd-grid / pd-wrap
 
+    echo '<div class="toast" id="toast">🛒 Added to cart!</div>';
+
     siteFooter();
 
-    // ── Inline JS ─────────────────────────────────────────────────
-    $js_step = $step;
-    $js_cond = $cond;
-    $js_pid  = $cfg['product_id'];
-    $js_sid  = htmlspecialchars($sid, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    $js_step      = $step;
+    $js_cond      = $cond;
+    $js_tpid      = $cfg['product_id'];
+    $js_pid       = $product_id;
+    $js_pname     = jsStr($p['name']);
+    $js_is_target = $is_target ? 'true' : 'false';
+    $js_sid       = jsStr($sid);
 
     echo <<<JS
 <script>
 (function(){
-    var t0 = performance.now();
-    var clicked = false;
-    var SID  = "{$js_sid}";
-    var STEP = {$js_step};
-    var COND = "{$js_cond}";
-    var PID  = {$js_pid};
+    var t0       = performance.now();
+    var clicked  = false;
+    var SID      = "{$js_sid}";
+    var STEP     = {$js_step};
+    var COND     = "{$js_cond}";
+    var TPID     = {$js_tpid};   // target product id for this task
+    var PID      = {$js_pid};    // product currently being viewed
+    var IS_TGT   = {$js_is_target};
 
-    function post(data, cb) {
+    function post(data, cb){
         data.session_id = SID;
-        fetch('log.php', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
-        }).then(function(){ if (cb) cb(); }).catch(function(){ if (cb) cb(); });
+        fetch('log.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
+            .then(function(){ if(cb) cb(); }).catch(function(){ if(cb) cb(); });
     }
+    function beacon(data){ data.session_id=SID; navigator.sendBeacon('log.php',new Blob([JSON.stringify(data)],{type:'application/json'})); }
 
-    function beacon(data) {
-        data.session_id = SID;
-        navigator.sendBeacon('log.php', new Blob([JSON.stringify(data)], {type:'application/json'}));
-    }
+    // product_view — fired whenever this detail page loads (target or not)
+    post({event_type:'product_view', step:STEP, condition:COND,
+          target_product_id:TPID, clicked_element:"{$js_pname}"});
+    post({event_type:'page_enter', step:STEP, condition:COND, target_product_id:TPID});
 
-    // task_start — logged on page load to mark t0 for timing reference
-    post({event_type:'task_start', step:STEP, condition:COND, target_product_id:PID});
-    post({event_type:'page_enter', step:STEP, condition:COND, target_product_id:PID});
-
-    function onUnload() {
-        beacon({event_type:'page_exit', step:STEP, condition:COND, target_product_id:PID,
-                ms_page: Math.round(performance.now() - t0)});
+    function onUnload(){
+        beacon({event_type:'page_exit', step:STEP, condition:COND, target_product_id:TPID,
+                ms_page:Math.round(performance.now()-t0)});
     }
     window.addEventListener('beforeunload', onUnload);
 
-    document.querySelectorAll('#btn-area button').forEach(function(btn) {
-        btn.addEventListener('click', function(e) {
+    document.querySelectorAll('#btn-area button').forEach(function(btn){
+        btn.addEventListener('click', function(e){
             if (clicked) return;
-            clicked = true;
             var tfc   = Math.round(performance.now() - t0);
             var bname = btn.dataset.btn;
             var bx    = Math.round(e.clientX);
             var by    = Math.round(e.clientY);
-            var unint = (bname === 'buy_now') ? 1 : 0;
 
-            window.removeEventListener('beforeunload', onUnload);
+            if (IS_TGT) {
+                // ── Target product ─────────────────────────────────
+                clicked = true;
+                var unint = (bname === 'buy_now') ? 1 : 0;
+                window.removeEventListener('beforeunload', onUnload);
 
-            post({event_type:'button_click', step:STEP, condition:COND,
-                  target_product_id:PID, clicked_element:bname,
-                  click_x:bx, click_y:by,
-                  time_to_first_click_ms:tfc, is_unintended_interaction:unint},
-            function(){
-                post({event_type:'task_complete', step:STEP, condition:COND,
-                      target_product_id:PID, clicked_element:bname,
-                      click_x:bx, click_y:by,
-                      time_to_first_click_ms:tfc, is_unintended_interaction:unint,
-                      completed:1},
+                post({event_type:'button_click', step:STEP, condition:COND,
+                      target_product_id:TPID, clicked_element:bname,
+                      click_x:bx, click_y:by, time_to_first_click_ms:tfc,
+                      is_unintended_interaction:unint},
                 function(){
-                    beacon({event_type:'page_exit', step:STEP, condition:COND,
-                             target_product_id:PID, ms_page:Math.round(performance.now()-t0)});
-                    var f = document.createElement('form');
-                    f.method = 'POST'; f.action = 'index.php';
-                    var ai = document.createElement('input');
-                    ai.type = 'hidden'; ai.name = 'action'; ai.value = 'advance';
-                    f.appendChild(ai);
-                    document.body.appendChild(f);
-                    f.submit();
+                    post({event_type:'task_complete', step:STEP, condition:COND,
+                          target_product_id:TPID, clicked_element:bname,
+                          click_x:bx, click_y:by, time_to_first_click_ms:tfc,
+                          is_unintended_interaction:unint, completed:1},
+                    function(){
+                        beacon({event_type:'page_exit', step:STEP, condition:COND,
+                                target_product_id:TPID, ms_page:Math.round(performance.now()-t0)});
+                        var f = document.createElement('form');
+                        f.method='POST'; f.action='index.php';
+                        var inp = document.createElement('input');
+                        inp.type='hidden'; inp.name='action'; inp.value='advance';
+                        f.appendChild(inp);
+                        document.body.appendChild(f);
+                        f.submit();
+                    });
                 });
-            });
+            } else {
+                // ── Non-target product: log but stay on page ───────
+                // is_unintended_interaction is left blank for non-target clicks
+                post({event_type:'button_click', step:STEP, condition:COND,
+                      target_product_id:TPID, clicked_element:bname,
+                      click_x:bx, click_y:by, time_to_first_click_ms:tfc});
+                // Show "Added to cart" toast
+                var toast = document.getElementById('toast');
+                toast.classList.add('show');
+                // Update cart counter cosmetically
+                var cc = document.getElementById('cart-count');
+                if (cc) { var n = parseInt(cc.textContent.replace(/\D/g,''))||0; cc.textContent='('+(n+1)+')'; }
+                setTimeout(function(){ toast.classList.remove('show'); }, 2000);
+                // Allow a second click after toast clears (e.g. if they click the other button)
+                setTimeout(function(){ clicked = false; }, 300);
+            }
         });
     });
 })();
@@ -585,6 +721,17 @@ JS;
     closePage();
 }
 
+// ── Task dispatcher ────────────────────────────────────────────────
+function renderTask(int $step, string $sid): void {
+    $viewing = $_SESSION['task_product_view'] ?? null;
+    if ($viewing !== null) {
+        renderTaskProduct($step, (int)$viewing, $sid);
+    } else {
+        renderTaskCatalog($step, $sid);
+    }
+}
+
+// ── Distraction steps ──────────────────────────────────────────────
 function renderDistraction(int $step, string $sid): void {
     global $PRODUCTS;
 
@@ -597,9 +744,9 @@ function renderDistraction(int $step, string $sid): void {
     sessionBadge($sid);
     taskBanner($msg, $step);
 
-    // Product grid — cards are buttons that trigger distractionClick()
     echo '<div class="section">';
-    echo '<div class="section-title">All Products (' . count($PRODUCTS) . ')</div>';
+    echo '<div class="section-header"><div class="section-title">All Products (' . count($PRODUCTS) . ')</div>';
+    echo '<div class="filter-bar"><span class="filter-chip active">All</span><span class="filter-chip">Electronics</span><span class="filter-chip">Home & Kitchen</span><span class="filter-chip">Sports</span></div></div>';
     echo '<div class="product-grid">';
     foreach ($PRODUCTS as $p) {
         echo '<button class="p-card" data-pid="' . (int)$p['id'] . '" data-name="' . esc($p['name']) . '" onclick="distractionClick(this,event)">';
@@ -618,50 +765,39 @@ function renderDistraction(int $step, string $sid): void {
     siteFooter();
 
     $js_step = $step;
-    $js_sid  = htmlspecialchars($sid, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    $js_sid  = jsStr($sid);
 
     echo <<<JS
 <script>
 (function(){
-    var t0  = performance.now();
+    var t0   = performance.now();
     var SID  = "{$js_sid}";
     var STEP = {$js_step};
     var done = false;
 
-    function beacon(data) {
-        data.session_id = SID;
-        navigator.sendBeacon('log.php', new Blob([JSON.stringify(data)], {type:'application/json'}));
-    }
-    function post(data, cb) {
-        data.session_id = SID;
-        fetch('log.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)})
-            .then(function(){ if(cb) cb(); }).catch(function(){ if(cb) cb(); });
-    }
+    function post(data){ data.session_id=SID; fetch('log.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}); }
+    function beacon(data){ data.session_id=SID; navigator.sendBeacon('log.php',new Blob([JSON.stringify(data)],{type:'application/json'})); }
 
+    post({event_type:'task_start', step:STEP});
     post({event_type:'page_enter', step:STEP});
 
-    function onUnload() {
-        beacon({event_type:'page_exit', step:STEP, ms_page:Math.round(performance.now()-t0)});
-    }
+    function onUnload(){ beacon({event_type:'page_exit', step:STEP, ms_page:Math.round(performance.now()-t0)}); }
     window.addEventListener('beforeunload', onUnload);
 
-    window.distractionClick = function(btn, e) {
+    window.distractionClick = function(btn, e){
         if (done) return;
         done = true;
         var name = btn.dataset.name;
         var bx   = Math.round(e.clientX);
         var by   = Math.round(e.clientY);
         window.removeEventListener('beforeunload', onUnload);
-        beacon({event_type:'distraction_click', step:STEP,
-                clicked_element:name, click_x:bx, click_y:by});
+        beacon({event_type:'distraction_click', step:STEP, clicked_element:name, click_x:bx, click_y:by});
         beacon({event_type:'page_exit', step:STEP, ms_page:Math.round(performance.now()-t0)});
         var f = document.createElement('form');
-        f.method = 'POST'; f.action = 'index.php';
+        f.method='POST'; f.action='index.php';
         var ai = document.createElement('input');
-        ai.type = 'hidden'; ai.name = 'action'; ai.value = 'advance';
-        f.appendChild(ai);
-        document.body.appendChild(f);
-        f.submit();
+        ai.type='hidden'; ai.name='action'; ai.value='advance';
+        f.appendChild(ai); document.body.appendChild(f); f.submit();
     };
 })();
 </script>
@@ -669,16 +805,15 @@ JS;
     closePage();
 }
 
+// ── Survey ─────────────────────────────────────────────────────────
 function renderSurvey(string $sid): void {
     global $SURVEY_QUESTIONS;
-
     openPage('Short Survey');
     siteHeader();
     sessionBadge($sid);
     taskBanner('Please complete the following short survey. All questions must be answered.', 6);
 
-    echo '<div class="survey-wrap">';
-    echo '<div class="survey-card">';
+    echo '<div class="survey-wrap"><div class="survey-card">';
     echo '<h2>Quick Shopping Habits Survey</h2>';
     echo '<p class="sub">This survey has 5 questions about your online shopping habits and should take less than 2 minutes.</p>';
     echo '<form method="POST" action="index.php" id="sform">';
@@ -686,36 +821,32 @@ function renderSurvey(string $sid): void {
 
     foreach ($SURVEY_QUESTIONS as $i => $q) {
         $num = $i + 1;
-        echo '<div class="q-block">';
-        echo '<div class="q-text">' . $num . '. ' . esc($q['text']) . '</div>';
+        echo '<div class="q-block"><div class="q-text">' . $num . '. ' . esc($q['text']) . '</div>';
         echo '<div class="q-opts">';
         foreach ($q['options'] as $val => $label) {
             $name = 'q_' . $q['id'];
             $id   = $name . '_' . $val;
             echo '<div class="q-opt"><label for="' . esc($id) . '">';
             echo '<input type="radio" name="' . esc($name) . '" id="' . esc($id) . '" value="' . esc((string)$val) . '" required>';
-            echo '<span>' . esc($label) . '</span>';
-            echo '</label></div>';
+            echo '<span>' . esc($label) . '</span></label></div>';
         }
         echo '</div></div>';
     }
-
     echo '<button type="submit" class="btn-submit">Submit survey →</button>';
     echo '</form></div></div>';
     siteFooter();
 
-    $js_sid  = htmlspecialchars($sid, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-
+    $js_sid = jsStr($sid);
     echo <<<JS
 <script>
 (function(){
     var SID = "{$js_sid}";
-    function post(data){ data.session_id=SID; fetch('log.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}); }
+    function post(d){ d.session_id=SID; fetch('log.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)}); }
     post({event_type:'page_enter', step:6});
     document.getElementById('sform').addEventListener('submit', function(e){
-        var qs = this.querySelectorAll('.q-block');
-        for (var i=0;i<qs.length;i++){
-            if (!qs[i].querySelector('input[type=radio]:checked')){
+        var blocks = this.querySelectorAll('.q-block');
+        for (var i=0; i<blocks.length; i++){
+            if (!blocks[i].querySelector('input[type=radio]:checked')){
                 e.preventDefault();
                 alert('Please answer all questions before submitting.');
                 return;
@@ -728,21 +859,19 @@ JS;
     closePage();
 }
 
+// ── End page ───────────────────────────────────────────────────────
 function renderEnd(string $sid): void {
     openPage('Session Complete');
     $safe_sid = esc($sid);
-    $js_sid   = htmlspecialchars($sid, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    $js_sid   = jsStr($sid);
     $q_url    = esc(QUALTRICS_URL);
 
-    echo '<div class="pg-center">';
-    echo '<div class="start-card">';
+    echo '<div class="pg-center"><div class="start-card">';
     echo '<div style="font-size:2.5rem;margin-bottom:.5rem">✅</div>';
     echo '<h1>You\'re done!</h1>';
     echo '<p>Thank you for completing the shopping tasks. Please copy your session ID and enter it in the Qualtrics survey to link your responses.</p>';
-    echo '<div class="sid-box">';
-    echo '<div class="sid-label">Your session ID</div>';
-    echo '<div class="sid-value" id="sid-val">' . $safe_sid . '</div>';
-    echo '</div>';
+    echo '<div class="sid-box"><div class="sid-label">Your session ID</div>';
+    echo '<div class="sid-value" id="sid-val">' . $safe_sid . '</div></div>';
     echo '<button class="btn-primary" onclick="copyId()" id="copy-btn">📋 Copy session ID</button>';
     echo '<a class="btn-secondary" href="' . $q_url . '">Return to survey →</a>';
     echo '</div></div>';
@@ -754,30 +883,15 @@ function renderEnd(string $sid): void {
     fetch('log.php',{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({session_id:SID,event_type:'page_enter',step:8})});
 })();
-
 function copyId(){
     var sid = document.getElementById('sid-val').innerText.trim();
     var btn = document.getElementById('copy-btn');
-    function confirm(){
-        btn.textContent = '✓ Copied!';
-        btn.style.background = '#16a34a';
-        setTimeout(function(){ btn.textContent = '📋 Copy session ID'; btn.style.background = ''; }, 2500);
-    }
+    function confirm(){ btn.textContent='✓ Copied!'; btn.style.background='#16a34a'; setTimeout(function(){ btn.textContent='📋 Copy session ID'; btn.style.background=''; },2500); }
     if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(sid).then(confirm).catch(function(){
-            legacyCopy(sid); confirm();
-        });
-    } else {
-        legacyCopy(sid); confirm();
-    }
+        navigator.clipboard.writeText(sid).then(confirm).catch(function(){ legacyCopy(sid); confirm(); });
+    } else { legacyCopy(sid); confirm(); }
 }
-function legacyCopy(text){
-    var ta = document.createElement('textarea');
-    ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
-    document.body.appendChild(ta); ta.select();
-    try { document.execCommand('copy'); } catch(e){}
-    document.body.removeChild(ta);
-}
+function legacyCopy(t){ var ta=document.createElement('textarea'); ta.value=t; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(ta); }
 </script>
 JS;
     closePage();
@@ -786,7 +900,6 @@ JS;
 // ═══════════════════════════════════════════════════════════════════
 // MAIN RENDER
 // ═══════════════════════════════════════════════════════════════════
-
 if ($step === 0) {
     renderStart($sid);
 } elseif ($intr) {

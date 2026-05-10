@@ -9,7 +9,7 @@ Handles experimental tasks and click logging only. Demographics, consent, and po
 
 ```bash
 pp
-```
+```x
 
 Then open <http://localhost:8000> in a browser.
 
