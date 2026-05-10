@@ -371,8 +371,8 @@ if ($intr && ($step < 1 || $step > 7)) {
 // ═══════════════════════════════════════════════════════════════════
 $CSS = <<<'CSS'
 :root {
-    --primary:   #2563eb;
-    --primary-h: #1d4ed8;
+    --primary:   #25a6eb;
+    --primary-h: #1d84d8;
     --orange:    #f97316;
     --orange-h:  #ea6c0e;
     --text:      #111827;
