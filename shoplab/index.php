@@ -186,12 +186,7 @@ function getTaskCfg(int $step): array {
 // ═══════════════════════════════════════════════════════════════════
 
 function generateSessionId(): string {
-    $n = 1;
-    if (file_exists(COUNTER_FILE)) {
-        $n = max(1, (int)trim(file_get_contents(COUNTER_FILE)) + 1);
-    }
-    file_put_contents(COUNTER_FILE, (string)$n, LOCK_EX);
-    return 'S-2026-' . str_pad($n, 4, '0', STR_PAD_LEFT);
+    return 'S-2026-' . random_int(1000, 9999);
 }
 
 function nowIso(): string {
@@ -547,6 +542,7 @@ function openPage(string $title): void {
     echo '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">';
     echo '<title>' . esc($title) . ' — ShopLab</title>';
     echo '<style>' . $CSS . '</style>';
+    echo '<script src="https://t.contentsquare.net/uxa/3ad88be923834.js"></script>';
     echo '</head><body>';
 }
 
