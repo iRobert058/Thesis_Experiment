@@ -2,7 +2,7 @@
 session_start();
 
 // Qualtrics survey URL – change this to your actual survey link before running
-define('QUALTRICS_URL', 'https://REPLACE_WITH_YOUR_QUALTRICS_SURVEY_URL');
+define('QUALTRICS_URL', 'https://survey.uu.nl/jfe/form/SV_265oQKUgpQVtZlA');
 
 // Data directory paths
 define('DATA_DIR',     __DIR__ . '/data');
@@ -189,6 +189,17 @@ function generateSessionId(): string {
     return 'S-2026-' . $num;
 }
 
+// Read the counter file, add 1, save it, and return the new number
+function getParticipantNumber(): int {
+    $count = 0;
+    if (file_exists(COUNTER_FILE)) {
+        $count = (int)file_get_contents(COUNTER_FILE);
+    }
+    $count++;
+    file_put_contents(COUNTER_FILE, (string)$count);
+    return $count;
+}
+
 // Get the current time as an ISO 8601 string with milliseconds
 function nowIso(): string {
     $dt = new DateTime('now', new DateTimeZone('UTC'));
@@ -267,7 +278,8 @@ if (empty($_SESSION['step'])) {
     $_SESSION['step'] = 0;
 }
 if ($_SESSION['step'] === 0 && empty($_SESSION['session_id'])) {
-    $_SESSION['session_id'] = generateSessionId();
+    $_SESSION['session_id']         = generateSessionId();
+    $_SESSION['participant_number'] = getParticipantNumber();
 }
 
 // Handle language switch via GET parameter
