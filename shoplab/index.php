@@ -574,7 +574,7 @@ function openPage(string $title): void {
     echo '<head>';
     echo '<meta charset="UTF-8">';
     echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
-    echo '<title>' . esc($title) . ' — ShopLab</title>';
+    echo '<title>' . esc($title) . ' - ShopLab</title>';
     echo '<style>' . $CSS . '</style>';
     echo '<script src="https://t.contentsquare.net/uxa/3ad88be923834.js"></script>';
     echo '</head>';
@@ -891,15 +891,16 @@ function renderTaskProduct(int $step, int $product_id, string $sid): void {
     echo '<p class="pd-desc">' . esc($p['desc']) . '</p>';
     echo '<div class="pd-stock">' . esc(t('in_stock')) . '</div>';
 
-    $btn_atc = '<button class="pd-btn btn-atc" data-btn="add_to_cart">' . esc(t('add_to_cart')) . '</button>';
-    $btn_bn  = '<button class="pd-btn btn-bn"  data-btn="buy_now">' . esc(t('buy_now')) . '</button>';
-
     // Button order depends on experimental condition
     echo '<div id="btn-area">';
     if ($cond === 'standard') {
-        echo $btn_atc . $btn_bn;
+        // Standard: Add to cart (blue) first, Buy now (orange) second
+        echo '<button class="pd-btn btn-atc" data-btn="add_to_cart">' . esc(t('add_to_cart')) . '</button>';
+        echo '<button class="pd-btn btn-bn"  data-btn="buy_now">'    . esc(t('buy_now'))    . '</button>';
     } else {
-        echo $btn_bn . $btn_atc;
+        // Modified: Buy now comes first and gets the blue color, Add to cart gets orange
+        echo '<button class="pd-btn btn-atc" data-btn="buy_now">'    . esc(t('buy_now'))    . '</button>';
+        echo '<button class="pd-btn btn-bn"  data-btn="add_to_cart">' . esc(t('add_to_cart')) . '</button>';
     }
     echo '</div>';
 
