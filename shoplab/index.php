@@ -871,6 +871,7 @@ window.addEventListener('beforeunload', function() {
 // Category filter, sort and search
 var activeFilter = sessionStorage.getItem('catalogFilter') || 'All';
 var activeSort   = sessionStorage.getItem('catalogSort')   || 'default';
+var originalOrder = null;
 
 function applyFilters() {
     var query = (document.getElementById('search-input').value || '').toLowerCase().trim();
@@ -888,21 +889,23 @@ function applyFilters() {
 }
 
 function applySortOrder() {
-    var grid  = document.querySelector('.product-grid');
-    var items = Array.from(grid.children);
-    if (activeSort !== 'default') {
-        items.sort(function(a, b) {
+    var grid = document.querySelector('.product-grid');
+    if (!originalOrder) {
+        originalOrder = Array.from(grid.children);
+    }
+    var items = activeSort === 'default'
+        ? originalOrder.slice()
+        : Array.from(grid.children).sort(function(a, b) {
             var cA = a.classList.contains('p-card') ? a : a.querySelector('.p-card');
             var cB = b.classList.contains('p-card') ? b : b.querySelector('.p-card');
             if (!cA || !cB) return 0;
-            if (activeSort === 'price_asc')  return parseFloat(cA.dataset.price)   - parseFloat(cB.dataset.price);
-            if (activeSort === 'price_desc') return parseFloat(cB.dataset.price)   - parseFloat(cA.dataset.price);
-            if (activeSort === 'reviews')    return parseInt(cB.dataset.reviews)    - parseInt(cA.dataset.reviews);
-            if (activeSort === 'rating')     return parseFloat(cB.dataset.rating)  - parseFloat(cA.dataset.rating);
+            if (activeSort === 'price_asc')  return parseFloat(cA.dataset.price)  - parseFloat(cB.dataset.price);
+            if (activeSort === 'price_desc') return parseFloat(cB.dataset.price)  - parseFloat(cA.dataset.price);
+            if (activeSort === 'reviews')    return parseInt(cB.dataset.reviews)   - parseInt(cA.dataset.reviews);
+            if (activeSort === 'rating')     return parseFloat(cB.dataset.rating) - parseFloat(cA.dataset.rating);
             return 0;
         });
-        items.forEach(function(item) { grid.appendChild(item); });
-    }
+    items.forEach(function(item) { grid.appendChild(item); });
 }
 
 function setFilter(cat) {
@@ -1278,6 +1281,7 @@ window.distractionClick = function(btn, e) {
 // Category filter, sort and search
 var activeFilter = 'All';
 var activeSort   = 'default';
+var originalOrder = null;
 
 function applyFilters() {
     var query = (document.getElementById('search-input').value || '').toLowerCase().trim();
@@ -1289,18 +1293,20 @@ function applyFilters() {
 }
 
 function applySortOrder() {
-    var grid  = document.querySelector('.product-grid');
-    var items = Array.from(grid.children);
-    if (activeSort !== 'default') {
-        items.sort(function(a, b) {
+    var grid = document.querySelector('.product-grid');
+    if (!originalOrder) {
+        originalOrder = Array.from(grid.children);
+    }
+    var items = activeSort === 'default'
+        ? originalOrder.slice()
+        : Array.from(grid.children).sort(function(a, b) {
             if (activeSort === 'price_asc')  return parseFloat(a.dataset.price)  - parseFloat(b.dataset.price);
             if (activeSort === 'price_desc') return parseFloat(b.dataset.price)  - parseFloat(a.dataset.price);
             if (activeSort === 'reviews')    return parseInt(b.dataset.reviews)   - parseInt(a.dataset.reviews);
             if (activeSort === 'rating')     return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
             return 0;
         });
-        items.forEach(function(item) { grid.appendChild(item); });
-    }
+    items.forEach(function(item) { grid.appendChild(item); });
 }
 
 function setFilter(cat) {
