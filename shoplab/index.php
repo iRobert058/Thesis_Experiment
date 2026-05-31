@@ -9,24 +9,54 @@ define('DATA_DIR',     __DIR__ . '/data');
 define('COUNTER_FILE', DATA_DIR . '/session_counter.txt');
 define('EVENTS_FILE',  DATA_DIR . '/events.csv');
 
-// All products in the store (1–4 are the target products, 5–14 are fillers)
+// All products in the store (1-4 are the target products, 5-52 are fillers)
 $PRODUCTS = [
     1  => ['id'=>1, 'name'=>'Wireless Earbuds Pro',      'price'=>39.99, 'reviews'=>847,  'rating'=>4.4, 'category'=>'Electronics',   'color'=>'#dbeafe', 'icon'=>'🎧', 'desc'=>'High-quality wireless earbuds with active noise cancellation and 24-hour battery life. Compatible with iOS and Android.'],
     2  => ['id'=>2, 'name'=>'Water Bottle',              'price'=>24.95, 'reviews'=>312,  'rating'=>4.2, 'category'=>'Home & Kitchen', 'color'=>'#dcfce7', 'icon'=>'🍶', 'desc'=>'Eco-friendly insulated bottle, BPA-free. Keeps drinks cold 24 h and hot 12 h. 500 ml, dishwasher safe.'],
     3  => ['id'=>3, 'name'=>'Running Shoes X200',        'price'=>89.00, 'reviews'=>1203, 'rating'=>4.6, 'category'=>'Sports',         'color'=>'#fef3c7', 'icon'=>'👟', 'desc'=>'Lightweight running shoes with responsive cushioning. Breathable mesh upper, durable rubber outsole. Sizes 36–46.'],
-    4  => ['id'=>4, 'name'=>'Bamboo Desk Organizer',     'price'=>32.50, 'reviews'=>564,  'rating'=>4.3, 'category'=>'Home & Kitchen', 'color'=>'#f5f0eb', 'icon'=>'🗂',  'desc'=>'Premium bamboo desk organizer with 6 compartments. Keeps pens, papers and accessories tidy. 30 × 20 × 8 cm.'],
+    4  => ['id'=>4, 'name'=>'Bamboo Desk Organizer',     'price'=>32.50, 'reviews'=>564,  'rating'=>4.3, 'category'=>'Office & Study',  'color'=>'#f5f0eb', 'icon'=>'🗂',  'desc'=>'Premium bamboo desk organizer with 6 compartments. Keeps pens, papers and accessories tidy. 30 × 20 × 8 cm.'],
     5  => ['id'=>5, 'name'=>'Portable Phone Stand',      'price'=>12.99, 'reviews'=>2341, 'rating'=>4.7, 'category'=>'Electronics',   'color'=>'#f3f4f6', 'icon'=>'📱', 'desc'=>'Adjustable aluminium phone stand compatible with all smartphones and tablets. Folds flat for easy storage.'],
     6  => ['id'=>6, 'name'=>'Yoga Mat Premium',          'price'=>45.00, 'reviews'=>789,  'rating'=>4.4, 'category'=>'Sports',         'color'=>'#ede9fe', 'icon'=>'🧘', 'desc'=>'Non-slip 6 mm TPE yoga mat with alignment lines and carry strap. Suitable for all yoga styles. 183 × 61 cm.'],
     7  => ['id'=>7, 'name'=>'Manual Coffee Grinder',     'price'=>28.75, 'reviews'=>156,  'rating'=>4.1, 'category'=>'Home & Kitchen', 'color'=>'#fef9c3', 'icon'=>'☕', 'desc'=>'Hand-operated ceramic burr grinder for fresh coffee anywhere. Adjustable coarseness settings, 25 g capacity.'],
     8  => ['id'=>8, 'name'=>'Resistance Bands Set',      'price'=>19.99, 'reviews'=>1876, 'rating'=>4.6, 'category'=>'Sports',         'color'=>'#fee2e2', 'icon'=>'💪', 'desc'=>'Set of 5 latex resistance bands (2–45 kg). Includes carry bag, door anchor and illustrated exercise guide.'],
-    // Books
-    9  => ['id'=>9,  'name'=>'Atomical Habituals',           'price'=>16.99, 'reviews'=>1654, 'rating'=>4.8, 'category'=>'Books', 'color'=>'#fdf4ff', 'icon'=>'📚', 'desc'=>'James Clear\'s guide to building good habits and breaking bad ones. Over 10 million copies sold worldwide. Paperback, 320 pages.'],
-    10 => ['id'=>10, 'name'=>'The Psychology of being rich', 'price'=>13.50, 'reviews'=>982,  'rating'=>4.7, 'category'=>'Books', 'color'=>'#f0f9ff', 'icon'=>'💰', 'desc'=>'This book explores how people think about money and the role of behaviour in financial decisions. Paperback, 256 pages.'],
-    11 => ['id'=>11, 'name'=>'Deep Workings',                'price'=>15.99, 'reviews'=>741,  'rating'=>4.6, 'category'=>'Books', 'color'=>'#f0fdf4', 'icon'=>'🎯', 'desc'=>'Cal Newport\'s rules for focused success in a distracted world. Packed with case studies and actionable strategies. Paperback, 304 pages.'],
-    // Toys
-    12 => ['id'=>12, 'name'=>'Classic Building Blocks Set', 'price'=>29.99, 'reviews'=>743, 'rating'=>4.5, 'category'=>'Toys', 'color'=>'#fff7ed', 'icon'=>'🧱', 'desc'=>'250-piece colourful building block set compatible with major brands. Develops creativity and fine motor skills. Ages 4+.'],
-    13 => ['id'=>13, 'name'=>'Magnetic Drawing Board',      'price'=>17.50, 'reviews'=>421, 'rating'=>4.3, 'category'=>'Toys', 'color'=>'#f7fee7', 'icon'=>'🎨', 'desc'=>'Mess-free magnetic drawing board with stampers and stencils. Erase with a slider. 30 × 22 cm. Ages 3+.'],
-    14 => ['id'=>14, 'name'=>'Wooden Puzzle Set',           'price'=>22.99, 'reviews'=>318, 'rating'=>4.4, 'category'=>'Toys', 'color'=>'#fef9c3', 'icon'=>'🧩', 'desc'=>'Set of 4 chunky wooden jigsaw puzzles (12–24 pieces each). Painted with non-toxic dyes. Great for toddlers aged 2–5.'],
+    // Office, travel and daily essentials
+    9  => ['id'=>9,  'name'=>'A5 Notebook Set',           'price'=>16.99, 'reviews'=>654, 'rating'=>4.5, 'category'=>'Office & Study',      'color'=>'#fdf4ff', 'icon'=>'📓', 'desc'=>'Set of three ruled A5 notebooks with durable covers and smooth paper for meetings, classes and daily notes.'],
+    10 => ['id'=>10, 'name'=>'Cable Organizer Kit',       'price'=>13.50, 'reviews'=>982, 'rating'=>4.6, 'category'=>'Office & Study',      'color'=>'#f0f9ff', 'icon'=>'🔗', 'desc'=>'Reusable cable ties, clips and labels for keeping chargers, desk cables and travel adapters organised.'],
+    11 => ['id'=>11, 'name'=>'Desk Mat Large',            'price'=>15.99, 'reviews'=>741, 'rating'=>4.4, 'category'=>'Office & Study',      'color'=>'#f0fdf4', 'icon'=>'🖥', 'desc'=>'Large non-slip desk mat for keyboard, mouse and writing space. Water-resistant surface, 80 × 40 cm.'],
+    12 => ['id'=>12, 'name'=>'Packing Cubes Set',         'price'=>29.99, 'reviews'=>743, 'rating'=>4.5, 'category'=>'Travel & Daily Use',  'color'=>'#fff7ed', 'icon'=>'🧳', 'desc'=>'Six-piece packing cube set with breathable mesh panels for organised suitcases, gym bags and weekend trips.'],
+    13 => ['id'=>13, 'name'=>'Compact Umbrella',          'price'=>17.50, 'reviews'=>421, 'rating'=>4.3, 'category'=>'Travel & Daily Use',  'color'=>'#f7fee7', 'icon'=>'☂️', 'desc'=>'Wind-resistant compact umbrella with automatic open-close button and sleeve. Fits easily in a backpack.'],
+    14 => ['id'=>14, 'name'=>'Insulated Lunch Box',       'price'=>22.99, 'reviews'=>318, 'rating'=>4.4, 'category'=>'Travel & Daily Use',  'color'=>'#fef9c3', 'icon'=>'🥪', 'desc'=>'Leak-resistant insulated lunch box with divider tray and cutlery slot. Suitable for work, school and day trips.'],
+    // More filler products
+    15 => ['id'=>15, 'name'=>'Bluetooth Speaker Mini',      'price'=>34.99, 'reviews'=>1298, 'rating'=>4.5, 'category'=>'Electronics',   'color'=>'#e0f2fe', 'icon'=>'🔊', 'desc'=>'Compact Bluetooth speaker with punchy sound, water-resistant housing and 12-hour playback. Includes USB-C charging cable.'],
+    16 => ['id'=>16, 'name'=>'USB-C Charging Hub',          'price'=>27.95, 'reviews'=>684,  'rating'=>4.3, 'category'=>'Electronics',   'color'=>'#f1f5f9', 'icon'=>'🔌', 'desc'=>'Seven-in-one USB-C hub with HDMI, USB-A, SD card reader and fast power pass-through for laptops and tablets.'],
+    17 => ['id'=>17, 'name'=>'Smart LED Desk Lamp',         'price'=>41.50, 'reviews'=>934,  'rating'=>4.4, 'category'=>'Electronics',   'color'=>'#fefce8', 'icon'=>'💡', 'desc'=>'Adjustable LED desk lamp with touch controls, dimming levels, warm/cool light modes and a built-in timer.'],
+    18 => ['id'=>18, 'name'=>'Wireless Mouse Silent',       'price'=>18.99, 'reviews'=>1511, 'rating'=>4.5, 'category'=>'Electronics',   'color'=>'#e2e8f0', 'icon'=>'🖱', 'desc'=>'Quiet wireless mouse with ergonomic shape, adjustable DPI and long battery life for work or study.'],
+    19 => ['id'=>19, 'name'=>'Laptop Sleeve 14 Inch',       'price'=>21.99, 'reviews'=>508,  'rating'=>4.2, 'category'=>'Electronics',   'color'=>'#fae8ff', 'icon'=>'💻', 'desc'=>'Padded laptop sleeve with soft lining, splash-resistant fabric and a slim front pocket for accessories.'],
+    20 => ['id'=>20, 'name'=>'Digital Kitchen Scale',       'price'=>15.99, 'reviews'=>1124, 'rating'=>4.6, 'category'=>'Home & Kitchen', 'color'=>'#ecfccb', 'icon'=>'⚖️', 'desc'=>'Precise digital kitchen scale with tare function, stainless steel surface and easy-read display. Measures up to 5 kg.'],
+    21 => ['id'=>21, 'name'=>'Ceramic Dinner Bowl Set',     'price'=>38.00, 'reviews'=>376,  'rating'=>4.4, 'category'=>'Home & Kitchen', 'color'=>'#fef3c7', 'icon'=>'🥣', 'desc'=>'Set of four ceramic dinner bowls with a modern matte finish. Microwave and dishwasher safe.'],
+    22 => ['id'=>22, 'name'=>'Cotton Throw Blanket',        'price'=>36.95, 'reviews'=>642,  'rating'=>4.5, 'category'=>'Home & Kitchen', 'color'=>'#f5f0eb', 'icon'=>'🛋', 'desc'=>'Soft woven cotton throw blanket for sofa or bed. Breathable, machine washable and finished with tassels.'],
+    23 => ['id'=>23, 'name'=>'Airtight Food Containers',    'price'=>26.49, 'reviews'=>1842, 'rating'=>4.6, 'category'=>'Home & Kitchen', 'color'=>'#dcfce7', 'icon'=>'🍱', 'desc'=>'Ten-piece airtight food container set with stackable lids. Suitable for meal prep, pantry storage and leftovers.'],
+    24 => ['id'=>24, 'name'=>'Stainless Steel Mixing Bowls','price'=>31.99, 'reviews'=>733,  'rating'=>4.4, 'category'=>'Home & Kitchen', 'color'=>'#f8fafc', 'icon'=>'🥄', 'desc'=>'Nested stainless steel mixing bowl set with non-slip bases and measurement marks. Includes three sizes.'],
+    25 => ['id'=>25, 'name'=>'Adjustable Dumbbell Pair',    'price'=>74.99, 'reviews'=>826,  'rating'=>4.3, 'category'=>'Sports',         'color'=>'#fee2e2', 'icon'=>'🏋️', 'desc'=>'Space-saving adjustable dumbbell pair for home workouts. Quick weight changes and comfortable textured grips.'],
+    26 => ['id'=>26, 'name'=>'Foam Roller Pro',             'price'=>23.50, 'reviews'=>1419, 'rating'=>4.5, 'category'=>'Sports',         'color'=>'#dbeafe', 'icon'=>'🌀', 'desc'=>'Firm textured foam roller for stretching, mobility work and post-workout recovery. Lightweight and easy to store.'],
+    27 => ['id'=>27, 'name'=>'Cycling Gloves',              'price'=>18.50, 'reviews'=>592,  'rating'=>4.2, 'category'=>'Sports',         'color'=>'#e0e7ff', 'icon'=>'🚴', 'desc'=>'Breathable cycling gloves with padded palms, anti-slip grip and pull tabs for quick removal.'],
+    28 => ['id'=>28, 'name'=>'Quick-Dry Sports Towel',      'price'=>14.95, 'reviews'=>1022, 'rating'=>4.4, 'category'=>'Sports',         'color'=>'#ccfbf1', 'icon'=>'🏃', 'desc'=>'Lightweight microfiber sports towel that dries quickly and packs small. Includes a ventilated carry pouch.'],
+    29 => ['id'=>29, 'name'=>'Fitness Jump Rope',           'price'=>16.99, 'reviews'=>1197, 'rating'=>4.5, 'category'=>'Sports',         'color'=>'#fef9c3', 'icon'=>'🤸', 'desc'=>'Adjustable speed jump rope with smooth bearings and comfortable handles for cardio training.'],
+    30 => ['id'=>30, 'name'=>'Monitor Stand Riser',         'price'=>18.99, 'reviews'=>457,  'rating'=>4.3, 'category'=>'Office & Study',     'color'=>'#f0fdf4', 'icon'=>'🖥', 'desc'=>'Minimal monitor stand riser with storage space underneath for keyboard, notebooks and small desk supplies.'],
+    31 => ['id'=>31, 'name'=>'Reusable To-Go Cutlery',      'price'=>24.50, 'reviews'=>899,  'rating'=>4.6, 'category'=>'Travel & Daily Use', 'color'=>'#fff7ed', 'icon'=>'🍴', 'desc'=>'Reusable stainless steel cutlery set in a slim carry case for lunch breaks, travel and picnics.'],
+    32 => ['id'=>32, 'name'=>'Sticky Notes Bundle',         'price'=>21.95, 'reviews'=>312,  'rating'=>4.2, 'category'=>'Office & Study',     'color'=>'#eff6ff', 'icon'=>'📝', 'desc'=>'Assorted sticky notes and page flags for planning, studying and marking documents. Includes six colours.'],
+    33 => ['id'=>33, 'name'=>'Travel Toiletry Bag',         'price'=>17.75, 'reviews'=>664,  'rating'=>4.4, 'category'=>'Travel & Daily Use', 'color'=>'#fdf4ff', 'icon'=>'🧼', 'desc'=>'Hanging toiletry bag with clear compartments, water-resistant lining and sturdy hook for bathrooms or luggage.'],
+    34 => ['id'=>34, 'name'=>'Fine Tip Pen Set',            'price'=>19.99, 'reviews'=>528,  'rating'=>4.1, 'category'=>'Office & Study',     'color'=>'#fefce8', 'icon'=>'✏️', 'desc'=>'Set of twelve fine tip pens for notes, calendars and colour coding. Smooth ink with minimal bleed-through.'],
+    35 => ['id'=>35, 'name'=>'Travel Pillow Memory Foam',   'price'=>42.99, 'reviews'=>883,  'rating'=>4.5, 'category'=>'Travel & Daily Use', 'color'=>'#fee2e2', 'icon'=>'🛫', 'desc'=>'Supportive memory foam travel pillow with washable cover and snap closure for flights and train rides.'],
+    36 => ['id'=>36, 'name'=>'Reusable Shopping Tote',      'price'=>33.95, 'reviews'=>706,  'rating'=>4.4, 'category'=>'Travel & Daily Use', 'color'=>'#e0f2fe', 'icon'=>'🛍', 'desc'=>'Foldable reusable shopping tote made from sturdy recycled fabric. Packs into a small inner pocket.'],
+    37 => ['id'=>37, 'name'=>'Document Tray Organizer',     'price'=>25.99, 'reviews'=>389,  'rating'=>4.3, 'category'=>'Office & Study',     'color'=>'#fce7f3', 'icon'=>'📥', 'desc'=>'Stackable metal document tray for mail, papers and project folders. Keeps desks clear and easy to scan.'],
+    38 => ['id'=>38, 'name'=>'Commuter Travel Mug',         'price'=>39.50, 'reviews'=>1158, 'rating'=>4.6, 'category'=>'Travel & Daily Use', 'color'=>'#fef3c7', 'icon'=>'🥤', 'desc'=>'Leak-resistant travel mug with double-wall insulation and one-handed lid. Keeps coffee warm during commutes.'],
+    39 => ['id'=>39, 'name'=>'Ergonomic Wrist Rest',        'price'=>18.95, 'reviews'=>477,  'rating'=>4.2, 'category'=>'Office & Study',     'color'=>'#f7fee7', 'icon'=>'⌨️', 'desc'=>'Soft keyboard wrist rest with non-slip base for comfortable typing during longer work or study sessions.'],
+    40 => ['id'=>40, 'name'=>'Noise-Isolating Headphones',  'price'=>58.99, 'reviews'=>1672, 'rating'=>4.5, 'category'=>'Electronics',   'color'=>'#ede9fe', 'icon'=>'🎧', 'desc'=>'Over-ear headphones with soft ear cushions, foldable design and strong passive noise isolation for travel.'],
+    41 => ['id'=>41, 'name'=>'Compact Power Bank',          'price'=>29.99, 'reviews'=>2218, 'rating'=>4.7, 'category'=>'Electronics',   'color'=>'#e0f2fe', 'icon'=>'🔋', 'desc'=>'Slim 10000 mAh power bank with USB-C input/output and LED battery indicator for phones and earbuds.'],
+    42 => ['id'=>42, 'name'=>'Cordless Hand Vacuum',        'price'=>49.95, 'reviews'=>975,  'rating'=>4.3, 'category'=>'Home & Kitchen', 'color'=>'#f1f5f9', 'icon'=>'🧹', 'desc'=>'Lightweight cordless hand vacuum for crumbs, car interiors and quick cleanups. Includes two nozzle attachments.'],
+    43 => ['id'=>43, 'name'=>'Herb Garden Starter Kit',     'price'=>27.50, 'reviews'=>612,  'rating'=>4.4, 'category'=>'Home & Kitchen', 'color'=>'#dcfce7', 'icon'=>'🌿', 'desc'=>'Indoor herb growing kit with pots, soil discs, labels and seeds for basil, parsley and chives.'],
+    44 => ['id'=>44, 'name'=>'Trail Hiking Backpack',       'price'=>64.99, 'reviews'=>734,  'rating'=>4.5, 'category'=>'Sports',         'color'=>'#dbeafe', 'icon'=>'🎒', 'desc'=>'Lightweight 25 L hiking backpack with padded straps, rain cover and hydration pocket for day trips.'],
 ];
 
 // Survey questions for step 6
@@ -62,9 +92,9 @@ $TRANSLATIONS = [
         'cat_all'         => 'All',
         'cat_electronics' => 'Electronics',
         'cat_home_kitchen'=> 'Home & Kitchen',
-        'cat_sports'      => 'Sports',
-        'cat_books'       => 'Books',
-        'cat_toys'        => 'Toys',
+        'cat_sports'      => 'Sports & Wellness',
+        'cat_office'      => 'Office & Study',
+        'cat_travel'      => 'Travel & Daily Use',
         'all_products'    => 'All Products (%d)',
         'reviews'         => 'reviews',
         'back_catalog'    => '← Back to products',
@@ -95,6 +125,12 @@ $TRANSLATIONS = [
         'copied'          => '✓ Copied!',
         'return_btn'      => 'Return to survey →',
         'browse_title'    => 'Browse Products',
+        'sort_label'      => 'Sort:',
+        'sort_default'    => 'Default',
+        'sort_price_asc'  => 'Price ↑',
+        'sort_price_desc' => 'Price ↓',
+        'sort_reviews'    => 'Most reviewed',
+        'sort_rating'     => 'Top rated',
         'footer'          => '© 2026 ShopLab Store &nbsp;·&nbsp; All prices include VAT &nbsp;·&nbsp; Free returns within 30 days',
     ],
     'nl' => [
@@ -104,9 +140,9 @@ $TRANSLATIONS = [
         'cat_all'         => 'Alles',
         'cat_electronics' => 'Elektronica',
         'cat_home_kitchen'=> 'Huis, Tuin & Keuken',
-        'cat_sports'      => 'Sport',
-        'cat_books'       => 'Boeken',
-        'cat_toys'        => 'Speelgoed',
+        'cat_sports'      => 'Sport & Wellness',
+        'cat_office'      => 'Kantoor & Studie',
+        'cat_travel'      => 'Reizen & Dagelijks Gebruik',
         'all_products'    => 'Alle producten (%d)',
         'reviews'         => 'beoordelingen',
         'back_catalog'    => '←  Terug naar catalogus',
@@ -137,6 +173,12 @@ $TRANSLATIONS = [
         'copied'          => '✓ Gekopieerd!',
         'return_btn'      => 'Terug naar enquête →',
         'browse_title'    => 'Producten bekijken',
+        'sort_label'      => 'Sorteer:',
+        'sort_default'    => 'Standaard',
+        'sort_price_asc'  => 'Prijs ↑',
+        'sort_price_desc' => 'Prijs ↓',
+        'sort_reviews'    => 'Meest beoordeeld',
+        'sort_rating'     => 'Hoogst beoordeeld',
         'footer'          => '© 2026 ShopLab Store &nbsp;·&nbsp; Alle prijzen zijn inclusief btw &nbsp;·&nbsp; Gratis retourneren binnen 30 dagen',
     ],
 ];
@@ -161,8 +203,8 @@ function tCat(string $cat): string {
         'Electronics'    => 'cat_electronics',
         'Home & Kitchen' => 'cat_home_kitchen',
         'Sports'         => 'cat_sports',
-        'Books'          => 'cat_books',
-        'Toys'           => 'cat_toys',
+        'Office & Study' => 'cat_office',
+        'Travel & Daily Use' => 'cat_travel',
     ];
     if (isset($map[$cat])) {
         return t($map[$cat]);
@@ -181,6 +223,31 @@ function getTaskCfg(int $step): array {
     } else {
         return ['condition' => 'modified', 'product_id' => 4, 'label' => 'Modified-B'];
     }
+}
+
+// Returns all products in a fixed display order where target products (1–4)
+// are spread across positions 21, 26, 33, 42 so participants must scroll to find them.
+function getOrderedProducts(): array {
+    global $PRODUCTS;
+    $order = [
+        5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,
+        21,22,23,24,
+        1,
+        25,26,27,28,
+        2,
+        29,30,31,32,33,34,
+        3,
+        35,36,37,38,39,40,41,42,
+        4,
+        43,44,
+    ];
+    $result = [];
+    foreach ($order as $id) {
+        if (isset($PRODUCTS[$id])) {
+            $result[$id] = $PRODUCTS[$id];
+        }
+    }
+    return $result;
 }
 
 // Create a unique session ID for each participant
@@ -604,7 +671,7 @@ function siteHeader(string $context = 'catalog'): void {
     echo '</div></header>';
 
     echo '<nav class="cat-bar"><ul>';
-    $categories = ['All', 'Electronics', 'Home & Kitchen', 'Sports', 'Books', 'Toys'];
+    $categories = ['All', 'Electronics', 'Home & Kitchen', 'Sports', 'Office & Study', 'Travel & Daily Use'];
     foreach ($categories as $cat) {
         if ($is_product) {
             echo '<li><a href="#" class="cat-link" onclick="goHome();return false;">' . esc(tCat($cat)) . '</a></li>';
@@ -720,14 +787,27 @@ function renderTaskCatalog(int $step, string $sid): void {
     echo '<div class="section">';
     echo '<div class="section-header">';
     echo '<div class="section-title">' . esc(sprintf(t('all_products'), count($PRODUCTS))) . '</div>';
+    echo '<div class="filter-bar">';
+    echo '<span style="font-size:.8rem;color:var(--muted);align-self:center">' . esc(t('sort_label')) . '</span>';
+    foreach ([
+        ['default',    t('sort_default')],
+        ['price_asc',  t('sort_price_asc')],
+        ['price_desc', t('sort_price_desc')],
+        ['reviews',    t('sort_reviews')],
+        ['rating',     t('sort_rating')],
+    ] as [$key, $label]) {
+        $active = $key === 'default' ? ' active' : '';
+        echo '<button class="filter-chip sort-chip' . $active . '" data-sort="' . esc($key) . '" type="button">' . esc($label) . '</button>';
+    }
+    echo '</div>';
     echo '</div>';
 
     echo '<div class="product-grid">';
-    foreach ($PRODUCTS as $p) {
+    foreach (getOrderedProducts() as $p) {
         echo '<form method="POST" action="index.php" style="display:contents">';
         echo '<input type="hidden" name="action" value="view_product">';
         echo '<input type="hidden" name="product_id" value="' . (int)$p['id'] . '">';
-        echo '<button type="submit" class="p-card" data-cat="' . esc($p['category']) . '" data-name="' . esc($p['name']) . '">';
+        echo '<button type="submit" class="p-card" data-cat="' . esc($p['category']) . '" data-name="' . esc($p['name']) . '" data-price="' . $p['price'] . '" data-reviews="' . (int)$p['reviews'] . '" data-rating="' . $p['rating'] . '">';
         echo '<div class="p-card-img" style="background:' . esc($p['color']) . '" data-icon="' . esc($p['icon']) . '">';
         echo '<img src="images/' . (int)$p['id'] . '.png" alt="' . esc($p['name']) . '" loading="lazy" onerror="var d=this.parentElement;d.textContent=d.dataset.icon;">';
         echo '</div>';
@@ -788,8 +868,9 @@ window.addEventListener('beforeunload', function() {
     });
 });
 
-// Category filter and search
+// Category filter, sort and search
 var activeFilter = sessionStorage.getItem('catalogFilter') || 'All';
+var activeSort   = sessionStorage.getItem('catalogSort')   || 'default';
 
 function applyFilters() {
     var query = (document.getElementById('search-input').value || '').toLowerCase().trim();
@@ -806,15 +887,43 @@ function applyFilters() {
     });
 }
 
+function applySortOrder() {
+    var grid  = document.querySelector('.product-grid');
+    var items = Array.from(grid.children);
+    if (activeSort !== 'default') {
+        items.sort(function(a, b) {
+            var cA = a.classList.contains('p-card') ? a : a.querySelector('.p-card');
+            var cB = b.classList.contains('p-card') ? b : b.querySelector('.p-card');
+            if (!cA || !cB) return 0;
+            if (activeSort === 'price_asc')  return parseFloat(cA.dataset.price)   - parseFloat(cB.dataset.price);
+            if (activeSort === 'price_desc') return parseFloat(cB.dataset.price)   - parseFloat(cA.dataset.price);
+            if (activeSort === 'reviews')    return parseInt(cB.dataset.reviews)    - parseInt(cA.dataset.reviews);
+            if (activeSort === 'rating')     return parseFloat(cB.dataset.rating)  - parseFloat(cA.dataset.rating);
+            return 0;
+        });
+        items.forEach(function(item) { grid.appendChild(item); });
+    }
+}
+
 function setFilter(cat) {
     activeFilter = cat;
     sessionStorage.setItem('catalogFilter', cat);
-    document.querySelectorAll('.filter-chip').forEach(function(chip) {
+    document.querySelectorAll('.filter-chip:not(.sort-chip)').forEach(function(chip) {
         chip.classList.toggle('active', chip.dataset.filter === cat);
     });
     document.querySelectorAll('.cat-link[data-filter]').forEach(function(link) {
         link.classList.toggle('active', link.dataset.filter === cat);
     });
+    applyFilters();
+}
+
+function setSort(key) {
+    activeSort = key;
+    sessionStorage.setItem('catalogSort', key);
+    document.querySelectorAll('.sort-chip').forEach(function(chip) {
+        chip.classList.toggle('active', chip.dataset.sort === key);
+    });
+    applySortOrder();
     applyFilters();
 }
 
@@ -827,10 +936,17 @@ document.querySelectorAll('.cat-link[data-filter]').forEach(function(link) {
         setFilter(this.dataset.filter);
     });
 });
+document.querySelectorAll('.sort-chip').forEach(function(chip) {
+    chip.addEventListener('click', function() { setSort(this.dataset.sort); });
+});
 document.getElementById('search-input').addEventListener('input', applyFilters);
 
-// Restore filter state when coming back from a product page
+// Restore filter and sort state when coming back from a product page
+applySortOrder();
 setFilter(activeFilter);
+document.querySelectorAll('.sort-chip').forEach(function(chip) {
+    chip.classList.toggle('active', chip.dataset.sort === activeSort);
+});
 
 // Logo / Home link resets filter and scrolls to top
 window.goHome = function() {
@@ -1070,10 +1186,25 @@ function renderDistraction(int $step, string $sid): void {
     taskBanner($msg, $step);
 
     echo '<div class="section">';
-    echo '<div class="section-header"><div class="section-title">' . esc(sprintf(t('all_products'), count($PRODUCTS))) . '</div></div>';
+    echo '<div class="section-header">';
+    echo '<div class="section-title">' . esc(sprintf(t('all_products'), count($PRODUCTS))) . '</div>';
+    echo '<div class="filter-bar">';
+    echo '<span style="font-size:.8rem;color:var(--muted);align-self:center">' . esc(t('sort_label')) . '</span>';
+    foreach ([
+        ['default',    t('sort_default')],
+        ['price_asc',  t('sort_price_asc')],
+        ['price_desc', t('sort_price_desc')],
+        ['reviews',    t('sort_reviews')],
+        ['rating',     t('sort_rating')],
+    ] as [$key, $label]) {
+        $active = $key === 'default' ? ' active' : '';
+        echo '<button class="filter-chip sort-chip' . $active . '" data-sort="' . esc($key) . '" type="button">' . esc($label) . '</button>';
+    }
+    echo '</div>';
+    echo '</div>';
     echo '<div class="product-grid">';
-    foreach ($PRODUCTS as $p) {
-        echo '<button class="p-card" data-pid="' . (int)$p['id'] . '" data-cat="' . esc($p['category']) . '" data-name="' . esc($p['name']) . '" onclick="distractionClick(this,event)">';
+    foreach (getOrderedProducts() as $p) {
+        echo '<button class="p-card" data-pid="' . (int)$p['id'] . '" data-cat="' . esc($p['category']) . '" data-name="' . esc($p['name']) . '" data-price="' . $p['price'] . '" data-reviews="' . (int)$p['reviews'] . '" data-rating="' . $p['rating'] . '" onclick="distractionClick(this,event)">';
         echo '<div class="p-card-img" style="background:' . esc($p['color']) . '" data-icon="' . esc($p['icon']) . '">';
         echo '<img src="images/' . (int)$p['id'] . '.png" alt="' . esc($p['name']) . '" loading="lazy" onerror="var d=this.parentElement;d.textContent=d.dataset.icon;">';
         echo '</div>';
@@ -1144,32 +1275,51 @@ window.distractionClick = function(btn, e) {
     form.submit();
 };
 
-// Category filter and search
+// Category filter, sort and search
 var activeFilter = 'All';
+var activeSort   = 'default';
 
 function applyFilters() {
     var query = (document.getElementById('search-input').value || '').toLowerCase().trim();
     document.querySelectorAll('.p-card').forEach(function(card) {
         var catMatch  = activeFilter === 'All' || card.dataset.cat === activeFilter;
         var nameMatch = !query || card.dataset.name.toLowerCase().indexOf(query) !== -1;
-        var visible   = catMatch && nameMatch;
-        var parent    = card.parentElement;
-        if (parent && parent.tagName === 'FORM') {
-            parent.style.display = visible ? 'contents' : 'none';
-        } else {
-            card.style.display = visible ? '' : 'none';
-        }
+        card.style.display = (catMatch && nameMatch) ? '' : 'none';
     });
+}
+
+function applySortOrder() {
+    var grid  = document.querySelector('.product-grid');
+    var items = Array.from(grid.children);
+    if (activeSort !== 'default') {
+        items.sort(function(a, b) {
+            if (activeSort === 'price_asc')  return parseFloat(a.dataset.price)  - parseFloat(b.dataset.price);
+            if (activeSort === 'price_desc') return parseFloat(b.dataset.price)  - parseFloat(a.dataset.price);
+            if (activeSort === 'reviews')    return parseInt(b.dataset.reviews)   - parseInt(a.dataset.reviews);
+            if (activeSort === 'rating')     return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
+            return 0;
+        });
+        items.forEach(function(item) { grid.appendChild(item); });
+    }
 }
 
 function setFilter(cat) {
     activeFilter = cat;
-    document.querySelectorAll('.filter-chip').forEach(function(chip) {
+    document.querySelectorAll('.filter-chip:not(.sort-chip)').forEach(function(chip) {
         chip.classList.toggle('active', chip.dataset.filter === cat);
     });
     document.querySelectorAll('.cat-link[data-filter]').forEach(function(link) {
         link.classList.toggle('active', link.dataset.filter === cat);
     });
+    applyFilters();
+}
+
+function setSort(key) {
+    activeSort = key;
+    document.querySelectorAll('.sort-chip').forEach(function(chip) {
+        chip.classList.toggle('active', chip.dataset.sort === key);
+    });
+    applySortOrder();
     applyFilters();
 }
 
@@ -1181,6 +1331,9 @@ document.querySelectorAll('.cat-link[data-filter]').forEach(function(link) {
         e.preventDefault();
         setFilter(this.dataset.filter);
     });
+});
+document.querySelectorAll('.sort-chip').forEach(function(chip) {
+    chip.addEventListener('click', function() { setSort(this.dataset.sort); });
 });
 document.getElementById('search-input').addEventListener('input', applyFilters);
 

@@ -8,7 +8,11 @@ Handles experimental tasks and click logging only. Demographics, consent, and po
 ## Quick start (local)
 
 ```bash
-pp
+1. Open terminal
+2. Copy filepath
+3. cd "filepath"
+4. php -S Localhost:8000
+
 ```x
 
 Then open <http://localhost:8000> in a browser.
@@ -53,7 +57,7 @@ shoplab/
 
 ## Session ID format
 
-`S-2026-XXXX` — auto-incrementing integer, zero-padded to 4 digits, stored in `data/session_counter.txt`. The counter starts at 1 and increments atomically using `LOCK_EX`.
+`S-2026-XXXX` — auto-randomized session ID generator.
 
 ---
 
@@ -75,7 +79,7 @@ An interstitial screen ("Ready for the next task? Press Continue.") is shown bet
 
 **Button order per condition:**
 - Standard: "Add to cart" on top, "Buy now" below.
-- Modified: "Buy now" on top, "Add to cart" below. Labels and styling are identical; only vertical order differs.
+- Modified: "Buy now" on top, "Add to cart" below. Colors of the button's change aswell, only the labels change.
 
 ---
 
