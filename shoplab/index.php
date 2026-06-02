@@ -623,8 +623,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .site-footer{background:var(--white);border-top:1px solid var(--border);margin-top:3rem;padding:1.5rem;text-align:center;font-size:.8rem;color:var(--muted)}
 @media(max-width:768px){
     .pd-grid{grid-template-columns:1fr;gap:1.5rem}
+    .hdr-inner{gap:.5rem;padding:0 .75rem}
+    .logo{font-size:1.1rem}
     .hdr-nav{display:none}
-    .search-wrap{max-width:160px}
+    .lang-sw{display:none}
+    .session-badge{display:none}
+    .search-wrap{flex:1;max-width:none}
+    .cart-text{display:none}
+    .cart-btn{padding:.5rem .6rem}
     .product-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
     .pd-img{font-size:5rem}
     .start-card,.intr-card{padding:2rem 1.25rem}
@@ -667,7 +673,7 @@ function siteHeader(string $context = 'catalog'): void {
     echo '<span>|</span>';
     echo '<a href="index.php?lang=nl"' . ($lang === 'nl' ? ' class="active"' : '') . '>NL</a>';
     echo '</div>';
-    echo '<button class="cart-btn" tabindex="-1">🛒 ' . esc(t('cart')) . ' <strong id="cart-count">(0)</strong></button>';
+    echo '<button class="cart-btn" tabindex="-1">🛒 <span class="cart-text">' . esc(t('cart')) . ' </span><strong id="cart-count">(0)</strong></button>';
     echo '</div></header>';
 
     echo '<nav class="cat-bar"><ul>';
