@@ -626,7 +626,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     .hdr-inner{gap:.5rem;padding:0 .75rem}
     .logo{font-size:1.1rem}
     .hdr-nav{display:none}
-    .lang-sw{display:none}
+    .hdr-inner .lang-sw{display:none}
     .session-badge{display:none}
     .search-wrap{flex:1;max-width:none}
     .cart-text{display:none}
