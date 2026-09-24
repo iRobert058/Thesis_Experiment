@@ -1,15 +1,15 @@
 <?php
 session_start();
 
-// Qualtrics survey URL – change this to your actual survey link before running
-define('QUALTRICS_URL', 'https://survey.uu.nl/jfe/form/SV_265oQKUgpQVtZlA');
+// Local settings (Qualtrics URL, admin password) – see config.example.php
+require __DIR__ . '/' . (file_exists(__DIR__ . '/config.php') ? 'config.php' : 'config.example.php');
 
 // Data directory paths
 define('DATA_DIR',     __DIR__ . '/data');
 define('COUNTER_FILE', DATA_DIR . '/session_counter.txt');
 define('EVENTS_FILE',  DATA_DIR . '/events.csv');
 
-// All products in the store (1-4 are the target products, 5-52 are fillers)
+// All products in the store (1-4 are the target products, 5-44 are fillers)
 $PRODUCTS = [
     1  => ['id'=>1, 'name'=>'Wireless Earbuds Pro',      'price'=>39.99, 'reviews'=>847,  'rating'=>4.4, 'category'=>'Electronics',   'color'=>'#dbeafe', 'icon'=>'🎧', 'desc'=>'High-quality wireless earbuds with active noise cancellation and 24-hour battery life. Compatible with iOS and Android.'],
     2  => ['id'=>2, 'name'=>'Water Bottle',              'price'=>24.95, 'reviews'=>312,  'rating'=>4.2, 'category'=>'Home & Kitchen', 'color'=>'#dcfce7', 'icon'=>'🍶', 'desc'=>'Eco-friendly insulated bottle, BPA-free. Keeps drinks cold 24 h and hot 12 h. 500 ml, dishwasher safe.'],

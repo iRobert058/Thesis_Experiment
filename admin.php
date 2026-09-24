@@ -4,11 +4,11 @@ session_start();
 
 define('DATA_DIR',    __DIR__ . '/data');
 define('EVENTS_FILE', DATA_DIR . '/events.csv');
-define('ADMIN_PASS',  'shoplab2025');
+require __DIR__ . '/' . (file_exists(__DIR__ . '/config.php') ? 'config.php' : 'config.example.php');
 
 // ── Authentication ─────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
-    if ($_POST['password'] === ADMIN_PASS) {
+    if (ADMIN_PASS !== '' && hash_equals(ADMIN_PASS, (string)$_POST['password'])) {
         $_SESSION['admin_ok'] = true;
     }
     header('Location: admin.php'); exit;

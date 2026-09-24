@@ -1,261 +1,234 @@
-# ShopLab - PHP Experiment Server
+# ShopLab
 
-PHP-based, within-subjects HCI study on how relocating a familiar UI element in an
-e-commerce interface disrupts users' procedural memory and produces unintended
-interactions. ShopLab runs the shopping tasks and logs every click. Demographics,
-consent, and the post-task questions live externally in Qualtrics; the two systems are
-linked by a session ID that participants copy manually.
+A lightweight PHP web shop built for a within-subjects HCI experiment. It measures how
+**moving a familiar button** in an e-commerce interface disrupts procedural memory and
+leads to unintended clicks.
 
-The in-experiment manipulation is a **positional relocation** of the primary action
-button, not a deceptive pattern in itself — it is designed to isolate the procedural-memory
-mechanism that deceptive patterns exploit.
+Participants complete four short shopping tasks ("add product X to your cart"). In the
+first two, the buttons sit where people expect them. In the last two, the
+**Add to cart** and **Buy now** buttons swap places. ShopLab logs every click, and the
+logs are used to test whether the swap causes more wrong clicks (H1) and slower
+decisions (H2).
+
+The manipulation is a plain positional relocation, not a deceptive pattern. It is meant to
+isolate the procedural-memory mechanism that deceptive patterns exploit.
+
+> Built for a master's thesis at Utrecht University. Consent, demographics and post-task
+> questionnaires run in Qualtrics. ShopLab handles the shopping part only, and the two are
+> linked by a session ID that participants copy across.
 
 ---
 
-## Quick start (local)
+## Features
+
+- Single-file PHP app with no framework, Composer or database
+- English and Dutch interface
+- Works on desktop and mobile
+- Steps are enforced server-side, so participants can't skip ahead through the URL
+- Every interaction is appended to a CSV file, including click coordinates and
+  `performance.now()` timings
+- Built-in attention and comprehension checks with an automatic exclusion rule
+- Password-protected admin dashboard with per-session summaries and CSV export
+
+## Quick start
+
+Requirements: **PHP 8.0+** (the standard build has sessions enabled).
 
 ```bash
-cd "path/to/experiment"
+git clone https://github.com/iRobert058/Thesis_Experiment.git
+cd Thesis_Experiment
+cp config.example.php config.php   # then edit config.php
 php -S localhost:8000
 ```
 
-Then open <http://localhost:8000> in a browser.
+Open <http://localhost:8000> for the experiment and <http://localhost:8000/admin.php> for
+the dashboard.
 
-**Requirements:** PHP 8.0+ with `session` enabled (default). No Composer, no external
-dependencies.
+## Configuration
 
----
+All local settings live in `config.php`, which is gitignored. Start by copying
+`config.example.php`.
 
-## Folder structure
+| Constant | Purpose |
+|----------|---------|
+| `QUALTRICS_URL` | Survey URL shown on the final page ("Return to survey") |
+| `ADMIN_PASS` | Password for `admin.php`. Admin login is disabled while it is empty |
+
+If `config.php` doesn't exist, the app falls back to `config.example.php`. The experiment
+still runs, but the admin dashboard stays locked.
+
+## Deployment
+
+1. Upload the repository to any PHP 8 host.
+2. Create `config.php` with a strong `ADMIN_PASS` and your survey URL.
+3. Make `data/` writable by the web server, for example `chmod 775 data/`.
+4. Block direct HTTP access to `data/`:
+   - **Apache:** the included `data/.htaccess` does this already.
+   - **Nginx:** add `location /data/ { deny all; }`.
+5. Serve the site over HTTPS.
+
+## Project structure
 
 ```
-Thesis_Experiment/
-├── index.php          # Main application — router + all page rendering (EN/NL)
-├── log.php            # Event logging endpoint (POST JSON → CSV)
-├── admin.php          # Admin dashboard (password: shoplab2025)
-├── images/            # 44 product images (1.png … 44.png)
-├── data/
-│   ├── .gitkeep       # Keeps the data/ directory tracked by git
-│   ├── events.csv     # Created automatically on first event
-│   └── session_counter.txt  # Running session count (created automatically)
-└── README.md
+.
+├── index.php            # Router and page rendering (catalog, product pages, tasks, survey, end page)
+├── log.php              # Event logging endpoint (POST JSON → data/events.csv)
+├── admin.php            # Admin dashboard (session summary, exclusions, CSV download)
+├── config.example.php   # Configuration template → copy to config.php
+├── images/              # Product images 1.png … 44.png (emoji fallback if missing)
+└── data/                # Runtime output, gitignored
+    ├── events.csv           # Event log (created on first event)
+    └── session_counter.txt  # Running count of sessions started
 ```
 
 ---
 
-## Before deployment
+## Study design
 
-1. **Set the Qualtrics return URL.** Near the top of `index.php`, edit the
-   `QUALTRICS_URL` constant:
-   ```php
-   define('QUALTRICS_URL', 'https://survey.uu.nl/jfe/form/SV_XXXXXXXXXXXX');
-   ```
-2. **Ensure `data/` is writable** by the web server process:
-   ```bash
-   chmod 775 data/
-   ```
-3. **Protect `data/` from direct HTTP access.** On Apache, add a `.htaccess` inside
-   `data/` with `Deny from all`. On Nginx, add a `location /data { deny all; }` block.
+### Procedure
 
----
+The server controls progression through `$_SESSION['step']`. Between every step,
+participants see a "Ready for the next task?" screen.
 
-## Session ID
-
-Format: `S-2026-XXXX`, where `XXXX` is a random 4-digit number generated per session
-(`random_int(1000, 9999)`). `data/session_counter.txt` holds a separate running total of
-sessions started; it is not part of the ID.
-
----
-
-## Procedure (steps controlled server-side by `$_SESSION['step']`)
-
-| Step | Type | Description | Condition |
+| Step | Type | Instruction | Condition |
 |------|------|-------------|-----------|
-| 0 | Start page | Session ID displayed; participant clicks "Start experiment" | — |
-| 1 | Task — Standard-A | Add **Wireless Earbuds Pro** to cart | standard |
-| 2 | Distraction | Browse the catalog; click the **cheapest** product | — |
-| 3 | Task — Standard-B | Add **Water Bottle** to cart | standard |
-| 4 | Distraction | Browse the catalog; click the product with the **most reviews** | — |
-| 5 | Task — Modified-A | Add **Running Shoes X200** to cart | modified |
-| 6 | Filler survey | 3-question survey; all three are validation checks (Q9, D1, D2) | — |
-| 7 | Task — Modified-B | Add **Bamboo Desk Organizer** to cart | modified |
-| 8 | End page | Session ID shown large; copy button; "Return to survey" button | — |
+| 0 | Start | Session ID shown; click **Start experiment** | — |
+| 1 | Task: Standard-A | Add **Wireless Earbuds Pro** to cart | standard |
+| 2 | Distraction | Click the **cheapest** product | — |
+| 3 | Task: Standard-B | Add **Water Bottle** to cart | standard |
+| 4 | Distraction | Click the product with the **most reviews** | — |
+| 5 | Task: Modified-A | Add **Running Shoes X200** to cart | modified |
+| 6 | Filler survey | Three validation questions (Q9, D1, D2) | — |
+| 7 | Task: Modified-B | Add **Bamboo Desk Organizer** to cart | modified |
+| 8 | End | Session ID with copy button; return to survey | — |
 
-An interstitial screen ("Ready for the next task? Press Continue.") appears between every
-step. Step advancement is server-side only — no GET parameter can skip a step. The four
-target products are spread across the catalog (display positions 21, 26, 33, 42) so
-participants have to scroll and search rather than click the first item shown.
+The four target products sit at catalog positions 21, 26, 33 and 42. Participants have to
+scroll and search for them instead of clicking the first item.
 
-**Button layout per condition (product detail page):**
+### The manipulation
 
-The primary slot (top, blue) and secondary slot (bottom, orange) are fixed by position.
-What relocates between conditions is the *label pairing*:
+A product page has two button slots that never move: a **top/blue** primary slot and a
+**bottom/orange** secondary slot. The labels are what change:
 
-- **Standard:** "Add to cart" occupies the top/blue slot; "Buy now" the bottom/orange slot.
-- **Modified:** the two labels swap slots, so "Buy now" is now top/blue and "Add to cart"
-  is bottom/orange.
+| Condition | Top / blue | Bottom / orange |
+|-----------|-----------|-----------------|
+| Standard | Add to cart | Buy now |
+| Modified | **Buy now** | **Add to cart** |
 
-So the "Add to cart" button — the one the task always asks for — moves both position and
-colour between the standard and modified conditions. That relocation is the manipulation.
+Every task asks for *Add to cart*, so in the modified condition the correct button moves
+to a new position and takes on a new colour.
+
+### Hypotheses
+
+- **H1, unintended interactions.** The modified layout leads to more *Buy now* clicks
+  when the task asks for *Add to cart*.
+- **H2, decision time.** The modified layout makes participants slower to click once
+  they are on the target product's page.
+
+On the target product, the first click on either button records the outcome and moves
+the participant to the next step. There is no chance to correct, so each task produces
+exactly one observation.
+
+### Exclusion rule
+
+Participants who fail **2 or more of the 3** validation questions are excluded.
+
+| ID | Check | Correct answer |
+|----|-------|----------------|
+| Q9 | Instruction-masked attention check | "Never" (value `1`) |
+| D1 | Cheapest product seen in step 2 | Portable Phone Stand, €12.99 (value `d`) |
+| D2 | Review count of the most-reviewed product in step 4 | "More than 2,000" (value `d`) |
+
+`admin.php` applies this rule automatically and marks excluded sessions in red.
 
 ---
 
-## Events CSV — column definitions
+## Data
 
-File: `data/events.csv` (never overwritten; header row written on first entry).
+Events are appended to `data/events.csv`. Existing rows are never overwritten, and the
+header row is written with the first event.
+
+<details>
+<summary><strong>Column definitions</strong></summary>
 
 | Column | Type | Description |
 |--------|------|-------------|
-| `session_id` | string | Participant session ID (e.g. `S-2026-0001`) |
+| `session_id` | string | Participant session ID, format `S-2026-XXXX` (random 4 digits) |
 | `timestamp_iso` | string | UTC timestamp, ISO 8601 with milliseconds |
-| `ms_elapsed` | integer | Milliseconds since session start (server-side) |
-| `event_type` | string | See event types table below |
-| `step` | integer | Experiment step 0–8 |
-| `condition` | string | `standard` or `modified` (blank for non-task steps) |
-| `target_product_id` | integer | Product ID of the target for this task (blank otherwise) |
-| `clicked_element` | string | Button name (`add_to_cart` / `buy_now`) or product name (distraction / product view) |
-| `click_x` | integer | Click X coordinate in CSS pixels |
-| `click_y` | integer | Click Y coordinate in CSS pixels |
-| `time_to_first_click_ms` | integer | Time from target product-page load to the button click (ms); JS-measured with `performance.now()` |
-| `is_unintended_interaction` | 0/1 | `1` if the participant's click on the target product was "Buy now" |
-| `question_id` | string | Survey question ID: `Q9`, `D1`, or `D2` |
+| `ms_elapsed` | int | Milliseconds since session start, measured server-side |
+| `event_type` | string | See event types below |
+| `step` | int | Experiment step, 0–8 |
+| `condition` | string | `standard` / `modified` (blank outside task steps) |
+| `target_product_id` | int | Target product for the current task |
+| `clicked_element` | string | `add_to_cart` / `buy_now`, or a product name |
+| `click_x`, `click_y` | int | Click coordinates in CSS pixels |
+| `time_to_first_click_ms` | int | Time from the target product page loading to the button click |
+| `is_unintended_interaction` | 0/1 | `1` if the click on the target was *Buy now* |
+| `question_id` | string | `Q9`, `D1` or `D2` |
 | `question_text` | string | Full question text |
 | `answer_value` | string | Selected option value |
-| `is_validation_question` | 0/1 | `1` for all three survey questions (Q9, D1, D2) |
-| `validation_passed` | 0/1/blank | `1` = correct; `0` = incorrect; blank for non-survey rows |
-| `completed` | 0/1 | `1` for `session_complete` and `task_complete` events |
+| `is_validation_question` | 0/1 | `1` for Q9, D1 and D2 |
+| `validation_passed` | 0/1/blank | Correctness of a survey answer |
+| `completed` | 0/1 | `1` on `task_complete` and `session_complete` |
 
-### Event types
+</details>
 
-| `event_type` | Triggered by | Notes |
-|---|---|---|
-| `session_start` | Clicking "Start experiment" | Step 0 |
-| `task_start` | JS on task catalog page load | Fired once per task step; marks task start |
-| `product_view` | JS on product detail page load | `clicked_element` = product viewed; fired for every product opened, target or not |
-| `button_click` | Clicking either button on a product page | On the target, `is_unintended_interaction` is set; on non-target products it is blank |
-| `task_complete` | The single click on either button of the **target** product | `completed = 1`. On the target, the first click on either button both records the outcome and advances the step — there is no correction step, so exactly one `task_complete` per task |
-| `distraction_click` | Clicking a product card in a distraction step | Steps 2 and 4 |
-| `survey_response` | Survey form submission | One row per question (Q9, D1, D2) |
-| `page_enter` | JS/PHP on page render | Catalog, product detail, survey, end pages |
-| `page_exit` | JS `beforeunload` via `sendBeacon` | |
-| `session_complete` | Reaching step 8 | `completed = 1` |
+<details>
+<summary><strong>Event types</strong></summary>
 
----
+| `event_type` | Triggered by |
+|---|---|
+| `session_start` | Clicking **Start experiment** |
+| `task_start` | Loading the catalog at the start of a task |
+| `product_view` | Opening any product page |
+| `button_click` | Clicking *Add to cart* or *Buy now* on any product |
+| `task_complete` | The one decisive click on the target product |
+| `distraction_click` | Clicking a product in steps 2 and 4 |
+| `survey_response` | Submitting the filler survey (one row per question) |
+| `page_enter` / `page_exit` | Page render / `beforeunload` (via `sendBeacon`) |
+| `session_complete` | Reaching step 8 |
 
-## H1 — unintended interactions
+</details>
 
-**Hypothesis:** the modified button order causes more "Buy now" clicks on tasks that ask
-for "Add to cart."
+### Analysis example (pandas)
 
-**Measure:** `is_unintended_interaction` on `task_complete` rows.
-
-- `1` when the participant's decisive click on the target was "Buy now" (wrong button).
-- `0` when it was "Add to cart" (correct button).
-
-Because the first click on the target both records the outcome and advances the task,
-each task contributes exactly one value.
-
-**Per-participant score:**
-```
-H1_score = sum(is_unintended_interaction) over Modified-A (step 5) and Modified-B (step 7)
-         → range: 0, 1, or 2
-```
-Standard-A and Standard-B (steps 1 and 3) are the within-subjects baseline (expected 0).
-
-**Python (pandas):**
 ```python
 import pandas as pd
 
 events = pd.read_csv("data/events.csv")
-tasks  = events[events.event_type == "task_complete"].copy()
 
-tasks["phase"] = tasks["step"].map({1: "standard", 3: "standard",
-                                     5: "modified", 7: "modified"})
-
-h1 = (tasks.groupby(["session_id", "phase"])["is_unintended_interaction"]
-           .sum().reset_index(name="errors"))
-```
-
----
-
-## H2 — time to first click
-
-**Hypothesis:** the modified button order increases decision time (hesitation or mis-click
-correction).
-
-**Measure:** `time_to_first_click_ms` on `task_complete` rows — the interval from opening
-the **target product's** detail page (`performance.now()` at load) to the click on either
-button, regardless of correctness. This excludes browsing/search time and isolates the
-button-decision moment.
-
-**Python (pandas):**
-```python
-timing = tasks[["session_id", "step", "condition", "time_to_first_click_ms"]].copy()
-timing["time_ms"] = pd.to_numeric(timing["time_to_first_click_ms"])
-```
-
----
-
-## Exclusion rule
-
-Participants are excluded if they fail **≥ 2 of the 3 validation questions** (Q9, D1, D2).
-
-| ID | Type | Correct response | Fails when |
-|----|------|-----------------|------------|
-| Q9 | Instruction-masked attention check | "Never" (value `1`) | Any other value |
-| D1 | Distraction comprehension (step 2 — cheapest) | "Portable Phone Stand (€12.99)" (value `d`) | Any other product |
-| D2 | Distraction comprehension (step 4 — most reviews) | "More than 2,000" (value `d`) | Any other range |
-
-D1 and D2 double as engagement checks: participants who did not attend to the catalog
-during the distraction steps tend to get them wrong.
-
-**Python (pandas):**
-```python
+# Exclusions: ≥ 2 failed validation questions
 val = events[events.is_validation_question == 1]
-fails = (val.assign(failed=(val.validation_passed == 0))
-            .groupby("session_id")["failed"].sum())
+fails = (val.validation_passed == 0).groupby(val.session_id).sum()
+clean = events[~events.session_id.isin(fails[fails >= 2].index)]
 
-excluded_ids = fails[fails >= 2].index
-clean = events[~events.session_id.isin(excluded_ids)]
+tasks = clean[clean.event_type == "task_complete"].copy()
+
+# H1: wrong-button clicks per participant and condition (0–2 each)
+h1 = (tasks.groupby(["session_id", "condition"])["is_unintended_interaction"]
+           .sum().unstack())
+
+# H2: decision time per task
+h2 = tasks[["session_id", "step", "condition", "time_to_first_click_ms"]]
 ```
 
-The admin dashboard (`admin.php`) pre-computes this and flags excluded sessions in red.
-
 ---
 
-## Admin dashboard
+## Product catalog
 
-URL: `/admin.php` — password: `shoplab2025`
+The catalog has 44 products in five categories: Electronics (9), Home & Kitchen (9),
+Sports (9), Office & Study (9) and Travel & Daily Use (8). Products 1–4 are the task
+targets. Product 5, the Portable Phone Stand, is the answer to both distraction
+questions: it is the cheapest item (€12.99, and nothing else costs that little) and the
+most-reviewed one (2,341 reviews; the runner-up has 2,218, which is still in the
+"> 2,000" band).
 
-- Summary table grouped by session with task timings, error flags, validation failures,
-  and exclusion status.
-- Download link for the raw `events.csv`.
-- Sessions with ≥ 2 validation failures shown with a red badge.
-
----
-
-## Filler survey (step 6)
-
-Three questions, all validation (`is_validation_question = 1`), stored as `survey_response`
-rows. There is no non-validation "bogus" filler item — all validation lives in ShopLab.
-
-- **Q9** — instruction-masked attention check ("select Never").
-- **D1** — cheapest product in the store just browsed.
-- **D2** — approximate review count of the most-reviewed product.
-
----
-
-## Products
-
-44 products across 5 categories (Electronics 9, Home & Kitchen 9, Sports 9,
-Office & Study 9, Travel & Daily Use 8). Products 1–4 are the task targets; product 5 is
-the pivot for both distraction questions; the remaining 39 are fillers.
-
-The table below is in catalog display order (the order participants scroll through).
+<details>
+<summary><strong>Full catalog in display order</strong></summary>
 
 | ID | Name | Price | Reviews | Category | Role |
 |----|------|-------|---------|----------|------|
-| 5 | Portable Phone Stand | €12.99 | 2,341 | Electronics | Filler — cheapest & most-reviewed (D1/D2 answer) |
+| 5 | Portable Phone Stand | €12.99 | 2,341 | Electronics | D1/D2 answer |
 | 6 | Yoga Mat Premium | €45.00 | 789 | Sports | Filler |
 | 7 | Manual Coffee Grinder | €28.75 | 156 | Home & Kitchen | Filler |
 | 8 | Resistance Bands Set | €19.99 | 1,876 | Sports | Filler |
@@ -275,19 +248,19 @@ The table below is in catalog display order (the order participants scroll throu
 | 22 | Cotton Throw Blanket | €36.95 | 642 | Home & Kitchen | Filler |
 | 23 | Airtight Food Containers | €26.49 | 1,842 | Home & Kitchen | Filler |
 | 24 | Stainless Steel Mixing Bowls | €31.99 | 733 | Home & Kitchen | Filler |
-| 1 | Wireless Earbuds Pro | €39.99 | 847 | Electronics | **Standard-A target (step 1)** |
+| 1 | Wireless Earbuds Pro | €39.99 | 847 | Electronics | **Target, step 1** |
 | 25 | Adjustable Dumbbell Pair | €74.99 | 826 | Sports | Filler |
 | 26 | Foam Roller Pro | €23.50 | 1,419 | Sports | Filler |
 | 27 | Cycling Gloves | €18.50 | 592 | Sports | Filler |
 | 28 | Quick-Dry Sports Towel | €14.95 | 1,022 | Sports | Filler |
-| 2 | Water Bottle | €24.95 | 312 | Home & Kitchen | **Standard-B target (step 3)** |
+| 2 | Water Bottle | €24.95 | 312 | Home & Kitchen | **Target, step 3** |
 | 29 | Fitness Jump Rope | €16.99 | 1,197 | Sports | Filler |
 | 30 | Monitor Stand Riser | €18.99 | 457 | Office & Study | Filler |
 | 31 | Reusable To-Go Cutlery | €24.50 | 899 | Travel & Daily Use | Filler |
 | 32 | Sticky Notes Bundle | €21.95 | 312 | Office & Study | Filler |
 | 33 | Travel Toiletry Bag | €17.75 | 664 | Travel & Daily Use | Filler |
 | 34 | Fine Tip Pen Set | €19.99 | 528 | Office & Study | Filler |
-| 3 | Running Shoes X200 | €89.00 | 1,203 | Sports | **Modified-A target (step 5)** |
+| 3 | Running Shoes X200 | €89.00 | 1,203 | Sports | **Target, step 5** |
 | 35 | Travel Pillow Memory Foam | €42.99 | 883 | Travel & Daily Use | Filler |
 | 36 | Reusable Shopping Tote | €33.95 | 706 | Travel & Daily Use | Filler |
 | 37 | Document Tray Organizer | €25.99 | 389 | Office & Study | Filler |
@@ -296,17 +269,20 @@ The table below is in catalog display order (the order participants scroll throu
 | 40 | Noise-Isolating Headphones | €58.99 | 1,672 | Electronics | Filler |
 | 41 | Compact Power Bank | €29.99 | 2,218 | Electronics | Filler |
 | 42 | Cordless Hand Vacuum | €49.95 | 975 | Home & Kitchen | Filler |
-| 4 | Bamboo Desk Organizer | €32.50 | 564 | Office & Study | **Modified-B target (step 7)** |
+| 4 | Bamboo Desk Organizer | €32.50 | 564 | Office & Study | **Target, step 7** |
 | 43 | Herb Garden Starter Kit | €27.50 | 612 | Home & Kitchen | Filler |
 | 44 | Trail Hiking Backpack | €64.99 | 734 | Sports | Filler |
 
-Distraction invariants:
+</details>
 
-- **Cheapest** (step 2 / D1): Portable Phone Stand, €12.99 — the only product at or below
-  €12.99, so the answer is unambiguous.
-- **Most reviewed** (step 4 / D2): Portable Phone Stand, 2,341 reviews. The next highest is
-  Compact Power Bank at 2,218; both fall in the "More than 2,000" band, so D2's answer holds
-  regardless.
+---
 
-Product images live in `images/` as `1.png … 44.png`; each product page falls back to an
-emoji icon if its image is missing.
+## Privacy
+
+ShopLab does not store names, IP addresses or other direct identifiers. The only link to
+the Qualtrics responses is the random session ID. Collected data in `data/` is
+gitignored, so keep it that way and handle it according to your ethics approval.
+
+## License
+
+[MIT](LICENSE) © 2026 Robert Karzijn

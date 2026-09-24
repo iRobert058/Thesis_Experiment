@@ -1,0 +1,13 @@
+# OS / editor
+.DS_Store
+.claude/
+.vscode/
+.idea/
+
+# Local configuration (copy config.example.php -> config.php)
+config.php
+
+# Collected experiment data — never commit participant data
+data/*
+!data/.gitkeep
+!data/.htaccess

@@ -1,0 +1,2 @@
+# Block direct HTTP access to collected data (Apache)
+Require all denied
