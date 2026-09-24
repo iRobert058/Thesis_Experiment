@@ -13,7 +13,7 @@ decisions (H2).
 The manipulation is a plain positional relocation, not a deceptive pattern. It is meant to
 isolate the procedural-memory mechanism that deceptive patterns exploit.
 
-> Built for a master's thesis at Utrecht University. Consent, demographics and post-task
+> Built for a Bachelor's thesis at Utrecht University. Consent, demographics and post-task
 > questionnaires run in Qualtrics. ShopLab handles the shopping part only, and the two are
 > linked by a session ID that participants copy across.
 
